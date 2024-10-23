@@ -1,0 +1,8 @@
+{
+  "name": "OxygenScan",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular",
+  "id": "87624fed"
+}
