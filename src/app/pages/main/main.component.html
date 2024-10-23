@@ -1,0 +1,32 @@
+<div class="main_component">
+  <h4>Korábbi mérési eredményei:</h4>
+  <p *ngIf="!data.length">Jelenleg nincs még Önhöz tartozó méréseredmény!</p>
+  <div class="table-container">
+    <table *ngIf="data.length" mat-table [dataSource]="data" class="mat-elevation-z8">
+
+      <ng-container matColumnDef="date">
+        <th mat-header-cell *matHeaderCellDef> Időpont</th>
+        <td mat-cell *matCellDef="let element"> {{element.date | date:'medium'}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="pulse">
+        <th mat-header-cell *matHeaderCellDef>Perifériás pulzusszám</th>
+        <td mat-cell *matCellDef="let element"> {{element.pulse}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="spo2">
+        <th mat-header-cell *matHeaderCellDef>Véroxigén telítettség</th>
+        <td mat-cell *matCellDef="let element"> {{element.spo2}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="pi">
+        <th mat-header-cell *matHeaderCellDef>Perfúziós index</th>
+        <td mat-cell *matCellDef="let element"> {{element.pi}} </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+  </div>
+  <button (click)="goToPage('scanner')" mat-raised-button color="primary">Indítok egy mérést</button>
+</div>

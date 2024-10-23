@@ -1,0 +1,13 @@
+div {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    height: 100%;
+}
+
+button{
+  width: fit-content;
+  margin-left: auto;
+  margin-right: auto;
+}

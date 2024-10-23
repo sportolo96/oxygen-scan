@@ -1,29 +1,50 @@
 <ion-app>
-  <ion-split-pane contentId="main-content">
-    <ion-menu contentId="main-content" type="overlay">
-      <ion-content>
-        <ion-list id="inbox-list">
-          <ion-list-header>Inbox</ion-list-header>
-          <ion-note>hi&#64;ionicframework.com</ion-note>
-
-          <ion-menu-toggle auto-hide="false" *ngFor="let p of appPages; let i = index">
-            <ion-item routerDirection="root" [routerLink]="[p.url]" lines="none" detail="false" routerLinkActive="selected">
-              <ion-icon aria-hidden="true" slot="start" [ios]="p.icon + '-outline'" [md]="p.icon + '-sharp'"></ion-icon>
-              <ion-label>{{ p.title }}</ion-label>
-            </ion-item>
-          </ion-menu-toggle>
-        </ion-list>
-
-        <ion-list id="labels-list">
-          <ion-list-header>Labels</ion-list-header>
-
-          <ion-item *ngFor="let label of labels" lines="none">
-            <ion-icon aria-hidden="true" slot="start" ios="bookmark-outline" md="bookmark-sharp"></ion-icon>
-            <ion-label>{{ label }}</ion-label>
-          </ion-item>
-        </ion-list>
-      </ion-content>
-    </ion-menu>
-    <ion-router-outlet id="main-content"></ion-router-outlet>
-  </ion-split-pane>
+  <ion-header class="ion-no-border">
+    <ion-toolbar class="ion-text-center">
+      <ion-title>Mediscan</ion-title>
+    </ion-toolbar>
+  </ion-header>
+  <ion-content>
+    <router-outlet></router-outlet>
+  </ion-content>
+  <ion-footer>
+    <ion-grid>
+      <ion-row>
+        <ion-col class="ion-margin-auto ion-text-start">
+          <p class="ion-margin-auto email-header" *ngIf="loggedInUser">{{loggedInUser.email}}</p>
+        </ion-col>
+        <ion-col class="ion-text-end">
+          <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="This is the menu item">
+            <mat-icon class="more_apps">apps</mat-icon>
+          </button>
+          <mat-menu #menu="matMenu">
+            <button *ngIf="loggedInUser" routerLink="/scanner" mat-menu-item
+                    [ngClass]="{ 'selected' : page==='scanner' }">
+              <mat-icon>sensor_occupied</mat-icon>
+              <span>Mérés</span>
+            </button>
+            <button *ngIf="loggedInUser" routerLink="/main" mat-menu-item
+                    [ngClass]="{ 'selected' : page==='main' }">
+              <mat-icon>list_alt</mat-icon>
+              <span>Mérési archív</span>
+            </button>
+            <button *ngIf="!loggedInUser" routerLink="/signup" mat-menu-item
+                    [ngClass]="{ 'selected' : page==='signup' }">
+              <mat-icon>how_to_reg</mat-icon>
+              <span>Regisztrálás</span>
+            </button>
+            <button *ngIf="!loggedInUser" routerLink="/login" mat-menu-item [ngClass]="{ 'selected' : page==='login' }">
+              <mat-icon>login</mat-icon>
+              <span>Bejelentkezés</span>
+            </button>
+            <button *ngIf="loggedInUser" routerLink="/login" mat-menu-item (click)='logout()'
+                    [ngClass]="{ 'selected' : page==='login' }">
+              <mat-icon>logout</mat-icon>
+              <span>Kijelentkezés</span>
+            </button>
+          </mat-menu>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-footer>
 </ion-app>

@@ -1,0 +1,18 @@
+<span class="loading-indicator" *ngIf="loading">
+    <mat-spinner></mat-spinner>
+</span>
+
+<div class="main_component">
+    <h1>A méréshez jelentkezz be!</h1>
+    <mat-form-field>
+        <mat-label for="email">E-mail: </mat-label><input matInput type="text" [formControl]="email" />
+    </mat-form-field>
+    <mat-form-field>
+        <mat-label for="password">Jelszó: </mat-label><input matInput type="password" [formControl]="password" />
+    </mat-form-field>
+  <mat-error *ngIf="error">{{error}}</mat-error>
+  <span>
+        <span><button mat-raised-button color="primary" (click)="login()">Belépés</button></span>
+        <span><button mat-raised-button color="primary" [routerLink]="'/signup'">Regisztráció</button></span>
+    </span>
+</div>
