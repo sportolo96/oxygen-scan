@@ -132,20 +132,25 @@ export class ScannerComponent implements OnInit {
 
   updateChart(arrayPulse: MeasurementResult[]) {
     if (!arrayPulse.length) {
-      return;
+        return;
     }
 
     const result = this.getValues(arrayPulse);
+
+    // Convert labels from number[] to string[]
+    const stringLabels = result.labels.map(label => label.toString());
+
     if (this.pulseChart) {
-      this.pulseChart.data.labels = result.labels;
-      this.pulseChart.data.datasets.forEach(dataset => {
-        dataset.data = result.values;
-      });
-      this.pulseChart.update();
+        this.pulseChart.data.labels = stringLabels; // Use string array here
+        this.pulseChart.data.datasets.forEach(dataset => {
+            dataset.data = result.values;
+        });
+        this.pulseChart.update();
     } else {
-      this.createChart(result);
+        this.createChart({ labels: stringLabels, values: result.values }); // Pass as string[]
     }
-  }
+}
+
 
   getValues(array: MeasurementResult[]): { labels: number[]; values: number[] } {
     const valuesArray: number[] = [];
@@ -202,70 +207,74 @@ export class ScannerComponent implements OnInit {
 
   async getDeviceNotify() {
     if (this.endScan) {
-      await BleClient.stopNotifications(
-        this.bluetoothConnectedDevice?.device?.deviceId ?? 'defaultId',
-        this.viatomServiceUUID,
-        this.viatomCharacteristicUUID
-      );
-      return;
+        // Safely access deviceId using optional chaining and provide a fallback
+        const deviceId = this.bluetoothConnectedDevice?.device?.deviceId ?? 'defaultId';
+        await BleClient.stopNotifications(deviceId, this.viatomServiceUUID, this.viatomCharacteristicUUID);
+        return;
     }
 
     try {
-      if (!this.bluetoothConnectedDevice) {
-        return;
-      }
-      await BleClient.initialize();
-
-      const stopScanAfterMilliSeconds = 10;
-
-      await BleClient.startNotifications(
-        this.bluetoothConnectedDevice.device?.deviceId,
-        this.viatomServiceUUID,
-        this.viatomCharacteristicUUID,
-        (value) => {
-          this.parseData(value);
+        // Check if the bluetoothConnectedDevice and device are defined
+        if (!this.bluetoothConnectedDevice || !this.bluetoothConnectedDevice.device) {
+            console.warn('Bluetooth device not connected');
+            return;
         }
-      );
 
-      setTimeout(async () => {
-        if (this.started && this.foundData) {
-          await BleClient.stopNotifications(
-            this.bluetoothConnectedDevice.device?.deviceId,
+        const deviceId = this.bluetoothConnectedDevice.device.deviceId; // Safe to access now
+
+        await BleClient.initialize();
+        const stopScanAfterMilliSeconds = 10;
+
+        // Start notifications for the connected device
+        await BleClient.startNotifications(
+            deviceId,
             this.viatomServiceUUID,
-            this.viatomCharacteristicUUID
-          );
-          this.foundData = false;
-        }
-      }, stopScanAfterMilliSeconds);
+            this.viatomCharacteristicUUID,
+            (value) => {
+                this.parseData(value);
+            }
+        );
 
-      await this.getDeviceNotify();
+        // Set a timeout to stop notifications after a certain period
+        setTimeout(async () => {
+            if (this.started && this.foundData) {
+                await BleClient.stopNotifications(deviceId, this.viatomServiceUUID, this.viatomCharacteristicUUID);
+                this.foundData = false; // Reset foundData flag
+            }
+        }, stopScanAfterMilliSeconds);
+
+        // Recursive call to continue getting notifications if needed
+        await this.getDeviceNotify();
     } catch (error) {
-      console.log('No get data', error);
+        console.error('Error while getting data', error);
     }
-  }
+}
 
-  parseData(value: DataView) {
-    const byteArray = new Uint8Array(value.buffer);
-    if (byteArray.length > 0) {
+
+parseData(value: DataView) {
+  const byteArray = new Uint8Array(value.buffer);
+  
+  if (byteArray.length > 0) {
       for (let index = 0; index < byteArray.length; index++) {
-        if (byteArray[index] === 0x08 && byteArray[index + 1] === 0x01 && byteArray[index + 5] !== undefined) {
-          this.measurementResult.spo2 = byteArray[index + 2] ?? null;
-          this.measurementResult.pulse = byteArray[index + 3] ?? null;
-          this.measurementResult.pi = byteArray[index + 5] / 10 ?? null;
+          if (byteArray[index] === 0x08 && byteArray[index + 1] === 0x01 && byteArray[index + 5] !== undefined) {
+              // Use a simple assignment instead of nullish coalescing
+              this.measurementResult.spo2 = byteArray[index + 2] || null; // Use || to default to null
+              this.measurementResult.pulse = byteArray[index + 3] || null; // Use || to default to null
+              this.measurementResult.pi = (byteArray[index + 5] !== undefined ? byteArray[index + 5] / 10 : null); // Use ternary to handle division
+              
+              this.dps.push({
+                  spo2: this.measurementResult.spo2,
+                  pulse: this.measurementResult.pulse,
+                  pi: this.measurementResult.pi,
+              });
 
-          this.dps.push({
-            spo2: this.measurementResult.spo2,
-            pulse: this.measurementResult.pulse,
-            pi: this.measurementResult.pi,
-          });
-
-          this.foundData = true;
-          this.updateChart(this.dps);
-          break;
-        }
+              this.foundData = true;
+              this.updateChart(this.dps);
+              break;
+          }
       }
-    }
   }
+}
 
   startStopTimer() {
     this.endScan = false;

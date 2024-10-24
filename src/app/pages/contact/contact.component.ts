@@ -7,6 +7,8 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ContactComponent implements OnInit {
 
+  email: string = 'test@gmail.com';
+
   constructor() { }
 
   ngOnInit(): void {
