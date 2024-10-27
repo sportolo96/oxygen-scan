@@ -3,16 +3,16 @@
 </span>
 
 <div class="main_component">
-    <h1>A méréshez jelentkezz be!</h1>
+    <h1 class="mb-8 font-bold text-2xl">A méréshez jelentkezz be!</h1>
     <mat-form-field>
-        <mat-label for="email">E-mail: </mat-label><input matInput type="text" [formControl]="email" />
+        <label class="contests" for="email">E-mail: </label><input matInput type="text" [formControl]="email" />
     </mat-form-field>
     <mat-form-field>
-        <mat-label for="password">Jelszó: </mat-label><input matInput type="password" [formControl]="password" />
+        <label class="contests" for="password">Jelszó: </label><input matInput type="password" [formControl]="password" />
     </mat-form-field>
   <mat-error *ngIf="error">{{error}}</mat-error>
   <span>
-        <span><button mat-raised-button color="primary" (click)="login()">Belépés</button></span>
-        <span><button mat-raised-button color="primary" [routerLink]="'/signup'">Regisztráció</button></span>
+        <button mat-fab extended (click)="login()">Belépés</button>
+        <button mat-fab extended [routerLink]="'/signup'">Regisztráció</button>
     </span>
 </div>

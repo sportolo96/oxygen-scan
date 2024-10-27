@@ -1,50 +1,39 @@
 <ion-app>
-  <ion-header class="ion-no-border">
-    <ion-toolbar class="ion-text-center">
-      <ion-title>Mediscan</ion-title>
-    </ion-toolbar>
-  </ion-header>
-  <ion-content>
-    <router-outlet></router-outlet>
-  </ion-content>
-  <ion-footer>
-    <ion-grid>
-      <ion-row>
-        <ion-col class="ion-margin-auto ion-text-start">
-          <p class="ion-margin-auto email-header" *ngIf="loggedInUser">{{loggedInUser.email}}</p>
-        </ion-col>
-        <ion-col class="ion-text-end">
-          <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="This is the menu item">
-            <mat-icon class="more_apps">apps</mat-icon>
-          </button>
-          <mat-menu #menu="matMenu">
-            <button *ngIf="loggedInUser" routerLink="/scanner" mat-menu-item
-                    [ngClass]="{ 'selected' : page==='scanner' }">
-              <mat-icon>sensor_occupied</mat-icon>
-              <span>Mérés</span>
+  <mat-sidenav-container class="sidenav-container">
+    <mat-sidenav #sidenav mode="over" class="sidenav">
+      <ion-header>
+        <ion-toolbar>
+          <ion-title>Navigation</ion-title>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content>
+        <ion-list>
+          <ion-menu-toggle auto-hide="false" *ngFor="let p of appPages">
+            <ion-item routerDirection="root" [routerLink]="[p.url]" lines="none" detail="false" routerLinkActive="selected">
+              <mat-icon slot="start">{{ p.icon }}</mat-icon>
+              <ion-label>{{ p.title }}</ion-label>
+            </ion-item>
+          </ion-menu-toggle>
+        </ion-list>
+      </ion-content>
+    </mat-sidenav>
+
+    <mat-sidenav-content>
+      <ion-content>
+        <div class="circle"></div>
+        <router-outlet></router-outlet>
+      </ion-content>
+    
+      <ion-footer class="absolute bottom-0">
+        <ion-toolbar class="ion-text-center">
+          <div class="w-full flex h-full relative">
+            <ion-title class="w-fit absolute top-0 bottom-0 right-0 left-0 mx-auto">Mediscan</ion-title>
+            <button class="mr-0 ml-auto" mat-icon-button (click)="sidenav.toggle()">
+              <mat-icon>menu</mat-icon>
             </button>
-            <button *ngIf="loggedInUser" routerLink="/main" mat-menu-item
-                    [ngClass]="{ 'selected' : page==='main' }">
-              <mat-icon>list_alt</mat-icon>
-              <span>Mérési archív</span>
-            </button>
-            <button *ngIf="!loggedInUser" routerLink="/signup" mat-menu-item
-                    [ngClass]="{ 'selected' : page==='signup' }">
-              <mat-icon>how_to_reg</mat-icon>
-              <span>Regisztrálás</span>
-            </button>
-            <button *ngIf="!loggedInUser" routerLink="/login" mat-menu-item [ngClass]="{ 'selected' : page==='login' }">
-              <mat-icon>login</mat-icon>
-              <span>Bejelentkezés</span>
-            </button>
-            <button *ngIf="loggedInUser" routerLink="/login" mat-menu-item (click)='logout()'
-                    [ngClass]="{ 'selected' : page==='login' }">
-              <mat-icon>logout</mat-icon>
-              <span>Kijelentkezés</span>
-            </button>
-          </mat-menu>
-        </ion-col>
-      </ion-row>
-    </ion-grid>
-  </ion-footer>
+          </div>
+        </ion-toolbar>
+      </ion-footer>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
 </ion-app>

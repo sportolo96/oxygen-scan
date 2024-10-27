@@ -14,6 +14,12 @@ export class AppComponent implements AfterViewInit{
   page = '';
   routes: Array<string> = [];
   loggedInUser?: firebase.default.User | null;
+  appPages = [
+    { title: 'Scanner', url: '/scanner', icon: 'camera' },
+    { title: 'Main', url: '/main', icon: 'list' },
+    { title: 'Sign Up', url: '/signup', icon: 'person-add' },
+    { title: 'Login', url: '/login', icon: 'input' },
+  ];
 
   constructor(private authService: AuthService, private router: Router) {
   }

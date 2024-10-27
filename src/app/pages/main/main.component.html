@@ -1,7 +1,7 @@
-<div class="main_component">
-  <h4>Korábbi mérési eredményei:</h4>
+<div class="main_component flex gap-6">
+  <h4 class="header-title">Korábbi mérési eredmények</h4>
   <p *ngIf="!data.length">Jelenleg nincs még Önhöz tartozó méréseredmény!</p>
-  <div class="table-container">
+  <div class="table table-container">
     <table *ngIf="data.length" mat-table [dataSource]="data" class="mat-elevation-z8">
 
       <ng-container matColumnDef="date">
@@ -28,5 +28,5 @@
       <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
     </table>
   </div>
-  <button (click)="goToPage('scanner')" mat-raised-button color="primary">Indítok egy mérést</button>
+  <button (click)="goToPage('scanner')" class="rounded-start-button">Új mérés</button>
 </div>

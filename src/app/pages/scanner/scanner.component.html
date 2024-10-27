@@ -1,5 +1,5 @@
-<div class="main_component">
-  <div>
+<div class="main_component flex gap-6">
+  <div class="z-10">
     <ion-grid *ngIf="bluetoothConnectedDevice">
       <ion-row>
         <ion-col class="ion-margin-auto ion-text-start">
@@ -10,7 +10,7 @@
           <ion-button expand="block" color="danger" *ngIf="bluetoothConnectedDevice"
                       (click)="disconnectFromBluetoothDevice(bluetoothConnectedDevice)">Lecsatlakoztat
           </ion-button>
-          <button mat-raised-button color="accent" [disabled]="started" (click)="startMonitoring()">
+          <button class="rounded-start-button" [disabled]="started" (click)="startMonitoring()">
             <mat-spinner *ngIf="started" class="button-spinner" [diameter]="30"></mat-spinner>
             Monitorozás indítása
           </button>
@@ -18,7 +18,7 @@
       </ion-row>
     </ion-grid>
     <div class="device-container" *ngIf="!bluetoothConnectedDevice">
-      <button [disabled]="bluetoothIsScanning" mat-raised-button color="warn" (click)="scanForBluetoothDevices()">
+      <button [disabled]="bluetoothIsScanning" class="cube-white-button" (click)="scanForBluetoothDevices()">
         <mat-spinner [diameter]="30" class="button-spinner" *ngIf="bluetoothIsScanning"></mat-spinner>
         Eszköz keresése
       </button>
