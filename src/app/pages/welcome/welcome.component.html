@@ -1,4 +1,58 @@
-<div class="main_component">
-  <h4>Isten hozott a Mediscanben, ahol lemérheti véroxigénszintjét, egy erre alkalmas bluetooth eszközt csatlakoztatva a mobilkészülékhez. Az eszköz beszerzése ajánlott!</h4>
-  <button (click)="goToPage('scanner')" mat-raised-button color="primary">Indítok egy mérést</button>
+<div class="main_component flex gap-4">
+  <span class="loading-indicator-container" *ngIf="loading">
+      <span class="loading-indicator">
+          <mat-spinner></mat-spinner>
+      </span>
+  </span>
+
+  <form class="form-panel">
+    <div class="flex gap-3">
+      <ion-img class="profile-img" src="../assets/img/profile.png"></ion-img>
+      <div class="my-auto flex flex-col gap-1" *ngIf="user">
+        <h1 class="normal-text">{{ user.email }}</h1>
+        <p class="small-text cursor-pointer" (click)="logout()">Kijelentkezés</p>
+      </div>
+      <div class="my-auto flex flex-col gap-1" *ngIf="!user">
+        <h1 class="normal-text">Vendégfiók</h1>
+        <div class="flex gap-4">
+          <p class="small-text cursor-pointer" [routerLink]="'/login'">Bejelentkezés</p>
+          <p class="small-text cursor-pointer" [routerLink]="'/signup'">Regisztráció</p>
+        </div>
+      </div>
+    </div>
+  </form>
+
+  <form class="form-panel">
+    <p class="normal-text">Eszköz</p>
+    <div *ngIf="bluetoothConnectedDevice.device" class="flex gap-4 justify-around">
+      <div class="flex flex-row gap-3">
+        <ion-img class="device-image m-auto" src="../assets/img/viatom.png"></ion-img>
+        <p class="small-text">{{ bluetoothConnectedDevice.device?.name ?? "NO name" }}</p>
+      </div>
+      <button class="cube-white-button small-button"
+              (click)="disconnectFromBluetoothDevice(bluetoothConnectedDevice)">Lecsatlakoztat
+      </button>
+    </div>
+
+    <div class="my-auto flex flex-col gap-1" *ngIf="!bluetoothConnectedDevice.device">
+      <h1 class="normal-text">Nem található párosított eszköz</h1>
+    </div>
+  </form>
+
+  <form class="form-panel">
+    <p class="normal-text">Legutolsó mérés</p>
+    <div class="flex justify-around" *ngIf="averageMeasurementResult?.pulse">
+      <p class="small-text">Pulzus: {{ averageMeasurementResult?.pulse ?? "no pulse data" }}</p>
+      <p class="small-text">SPO2: {{ averageMeasurementResult?.spo2 ?? "no spo2 data" }}</p>
+      <p class="small-text">PI: {{ averageMeasurementResult?.pi ?? "no pi data" }}</p>
+    </div>
+
+    <div class="my-auto flex flex-col gap-1" *ngIf="!averageMeasurementResult?.pulse">
+      <h1 class="normal-text">Nem található méréseredmény</h1>
+      <div class="flex gap-4">
+        <p class="small-text cursor-pointer" [routerLink]="'/scanner'">Új mérés</p>
+      </div>
+    </div>
+  </form>
 </div>
+

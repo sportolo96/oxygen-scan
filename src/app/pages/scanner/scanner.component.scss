@@ -1,14 +1,17 @@
-.device-image {
-  width: 50%;
-  max-width: 100px;
-}
-
 .device-container {
   text-align: center;
 }
 
-.button-spinner{
-  width: 10px;
-  height: 10px;
-  margin: auto;
+.tab-container{
+  color: black;
+  text-align: center;
+  border-bottom: 1px solid #3498db;
+
+  p{
+    cursor: pointer;
+  }
+
+  .tab-item-1{
+    border-bottom: 3px solid #3498db;
+  }
 }

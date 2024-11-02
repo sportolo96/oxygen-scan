@@ -4,6 +4,8 @@ import { WelcomeComponent } from './welcome.component';
 import { WelcomeRoutingModule } from './welcome-routing.module';
 import {MatButtonModule} from '@angular/material/button';
 import {MatTableModule} from '@angular/material/table';
+import { IonicModule } from '@ionic/angular';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @NgModule({
   declarations: [
@@ -11,9 +13,11 @@ import {MatTableModule} from '@angular/material/table';
   ],
     imports: [
         CommonModule,
+        IonicModule.forRoot(), // Import Ionic module here
         WelcomeRoutingModule,
         MatButtonModule,
-        MatTableModule
+        MatTableModule,
+        MatProgressSpinnerModule
     ]
 })
 export class WelcomeModule { }

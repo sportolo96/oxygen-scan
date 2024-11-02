@@ -31,37 +31,52 @@
 @import "~@ionic/angular/css/flex-utils.css";
 
 #background-content,
-.main_component,
 main{
   background-color: #fff !important;
 }
 
 .main_component {
-  height: 93%;
-  padding: 2rem;
+  background-color: transparent;
+  overflow-y: auto;
+  overflow-x: hidden;
+  height: 100%;
+  position: relative;
+  max-height: 100vh;
+  margin-top: 3.2rem;
+  padding: 87px 0.7rem 3.5rem !important;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-end!important;
+  justify-content: flex-start!important;
+  z-index: 2;
 }
 
 .cube-white-button {
-  z-index: 1;
+  z-index: 0;
   margin-top: auto;
   margin-bottom: auto;
   width: 100%;
-  max-width: 50vw;
-  width: 7rem!important;
-  height: 7rem;
+  padding: 1rem;
   text-transform: uppercase;
   font-weight: 500;
+  border: 3px solid #3498db;
+  border-radius: 1rem;
   text-align: center;
   background-color: white;
   color: #3498db;
-  border-radius: 50%;
   transition: all 0.3s ease;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
   cursor: pointer;
   font-family: 'Helvetica Neue', Arial, sans-serif;
+}
+
+.small-button {
+  font-size: 0.5rem;
+  width: fit-content;
+}
+
+.collored-button {
+  background-color:#3498db;
+  color: white;
 }
 
 .rounded-start-button {
@@ -90,31 +105,36 @@ main{
   z-index: 1;
   background-color: white;
   border-radius: 1rem;
-  padding-left: 1rem;
-  padding-right: 1rem;
-  padding-top: 0.5rem;
-  padding-bottom: 0.5rem;
   border: 3px solid #3498db;
   z-index: 1;
 }
 
 .header-title {
-  z-index: 1;
-  font-family: 'Helvetica Neue', Arial, sans-serif;
-  background-color: #fff;
-  color: black;
+  font: inherit !important;
+  font-size: 157% !important;
   width: 100%;
   border-radius: 1rem;
-  text-shadow: 1px 1px 19px #122b585e;
-  padding: 15px 30px;
-  font-size: 1.5rem;
+  padding: 15px 0;
   text-transform: uppercase;
-  text-align: center;
+  text-align: left;
+  margin: 0rem 0.5rem !important;
+}
+
+.background-container {
+  max-height: 100vh;
+  overflow: hidden;
+  position: absolute;
+  background-color: white;
+  height: 100%;
+  z-index: 0;
+  top: 0;
+  left: 0;
+  width: 100%;
 }
 
 .circle {
   width: 368%;
-  height: 192%;
+  height: 145rem;
   position: absolute;
   z-index: 0;
   border-radius: 50%;
@@ -122,4 +142,186 @@ main{
   top: 1%;
   background: rgb(2,0,36);
   background: linear-gradient(82deg, rgb(2, 0, 36) 0%, rgb(52 152 219) 35%, rgb(52 152 219) 100%);
+}
+
+.form-panel {
+  background-color: white;
+  border: 3px solid #3498db;
+  border-radius: 1rem;
+  z-index: 1;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  justify-content: space-around;
+  margin-bottom: 1rem;
+}
+
+.input {
+  width: 100%;
+  border: none;
+  background-color: transparent;
+}
+
+.loading-indicator{
+  position: absolute;
+  left: 0;
+  z-index: 999;
+  right: 0;
+  margin: auto;
+  width: fit-content;
+  height: fit-content;
+  top: 0;
+  bottom: 0;
+}
+
+.loading-indicator-container{
+  position: absolute;
+  z-index: 999;
+  right: 0;
+  margin: auto;
+  width: 100%;
+  height: 100%;
+  background-color: #3498db36;
+  top: 0;
+  bottom: 0;
+}
+
+.divider {
+  width: 100%;
+  height: 2px;
+  margin: 1rem 0;
+  background-color: #3498dbac;
+  border: none;
+}
+
+.mdc-text-field{
+  border-top-left-radius: 1rem!important;
+    background-color: white!important;
+    border-top-right-radius: 1rem!important;
+    border: 1px solid #3498db;
+    color: #3498db!important;
+
+    input {
+      color: #3498db!important;
+      background-color: inherit;
+    }
+}
+
+.mat-drawer-container{
+  height: 100vh;
+}
+
+.profile-img{
+  width: 4rem!important;
+  height: 4rem!important;
+  border-radius: 50%;
+  box-shadow: 1px 1px 2px black;
+  padding: 5px;
+  background: linear-gradient(132deg, rgb(186, 186, 186) 0%, rgba(52, 152, 219, 0.331) 35%, rgb(52, 152, 219) 100%);
+}
+
+.normal-text {
+  font: inherit!important;
+  font-family: 'Helvetica Neue', Arial, sans-serif;
+  width: 100%;
+  color: #3498db;
+  border-radius: 1rem;
+  font-size: 1rem!important;
+  text-align: left;
+  margin: 0!important;
+  z-index: 1;
+  height: fit-content;
+}
+
+.small-text {
+  font: inherit!important;
+  font-family: 'Helvetica Neue', Arial, sans-serif;
+  width: 100%;
+  color: #202020;
+  margin: auto!important;
+  border-radius: 1rem;
+  font-size: 0.8rem;
+  text-align: left;
+  z-index: 1;
+  height: fit-content;
+}
+
+.device-image {
+  width: 4rem;
+  height: 4rem;
+}
+
+.heart{
+  position: absolute;
+  width: 100px;
+  top: 0;
+  margin: auto;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  height: 90px;
+}
+.heart:before,
+.heart:after{
+  content: "";
+  position: absolute;
+  left: 50px;
+  top: 0;
+  width: 50px;
+  height: 80px;
+  background: #CC3E3E;
+  border-radius: 50px 50px 0;
+  transform-origin: 0 100%;
+  transform: rotate(-45deg);
+}
+.heart:after{
+  left: 0;
+  transform: rotate(45deg);
+  transform-origin :100% 100%;
+}
+
+/* Keyframe animation */
+@keyframes heartbeat {
+  0% {
+    transform: scale(1);
+  }
+  15% {
+    transform: scale(1.4);
+  }
+  30% {
+    transform: scale(1);
+  }
+  45% {
+    transform: scale(1.4);
+  }
+  70% {
+    transform: scale(1);
+  }
+}
+
+/* Apply the animation to the heart shape */
+.heart {
+  animation: heartbeat 1.3s infinite;
+}
+
+.start-button-container {
+  width: 7rem;
+  position: relative;
+  z-index: 1;
+  height: 7rem;
+
+  p{
+    z-index: 2;
+    margin: auto;
+    left: 0;
+    right: 0;
+    position: absolute;
+    width: fit-content;
+    height: fit-content;
+    top: -25%;
+    color: white;
+    bottom: 0;
+    font-size: 2rem;
+  }
 }

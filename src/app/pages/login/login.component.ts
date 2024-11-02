@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Observable, Subscription } from 'rxjs';
 import { AuthService } from '../../shared/services/auth.service';
@@ -11,15 +11,18 @@ import { AuthService } from '../../shared/services/auth.service';
 })
 export class LoginComponent implements OnInit, OnDestroy {
 
-  email = new FormControl('');
-  password = new FormControl('');
-
   loadingSubscription?: Subscription;
   loadingObservation?: Observable<boolean>;
   loading = false;
   error: string | null = null;
+  signInForm: FormGroup;
 
-  constructor(private router: Router, private authService: AuthService) { }
+  constructor(private router: Router, private authService: AuthService) {
+     this.signInForm = new FormGroup({
+      email: new FormControl('', [Validators.required, Validators.email]),
+      password: new FormControl('', [Validators.required]),
+    });
+   }
 
   ngOnInit(): void {
     this.setError(false);
@@ -28,18 +31,17 @@ export class LoginComponent implements OnInit, OnDestroy {
   async login(): Promise<void> {
     this.loading = true;
   
-    const emailValue: string | null = this.email.value; // Típus meghatározása
-    const passwordValue: string | null = this.password.value; // Típus meghatározása
-  
-    if (!emailValue || !passwordValue) {
+    const { email, password } = this.signInForm.value;
+
+    if (!email || !password) {
       this.setError(true);
       this.loading = false;
       return;
     }
   
     try {
-      const cred = await this.authService.login(emailValue, passwordValue);
-      this.router.navigateByUrl('welcome');
+      const cred = await this.authService.login(email, password);
+      this.router.navigateByUrl('/welcome');
       this.setError(false);
     } catch (error) {
       console.error(error);

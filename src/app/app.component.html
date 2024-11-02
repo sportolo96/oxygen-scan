@@ -1,39 +1,23 @@
-<ion-app>
-  <mat-sidenav-container class="sidenav-container">
-    <mat-sidenav #sidenav mode="over" class="sidenav">
-      <ion-header>
-        <ion-toolbar>
-          <ion-title>Navigation</ion-title>
-        </ion-toolbar>
-      </ion-header>
-      <ion-content>
-        <ion-list>
-          <ion-menu-toggle auto-hide="false" *ngFor="let p of appPages">
-            <ion-item routerDirection="root" [routerLink]="[p.url]" lines="none" detail="false" routerLinkActive="selected">
-              <mat-icon slot="start">{{ p.icon }}</mat-icon>
-              <ion-label>{{ p.title }}</ion-label>
-            </ion-item>
-          </ion-menu-toggle>
-        </ion-list>
-      </ion-content>
-    </mat-sidenav>
-
-    <mat-sidenav-content>
-      <ion-content>
-        <div class="circle"></div>
-        <router-outlet></router-outlet>
-      </ion-content>
-    
-      <ion-footer class="absolute bottom-0">
-        <ion-toolbar class="ion-text-center">
-          <div class="w-full flex h-full relative">
-            <ion-title class="w-fit absolute top-0 bottom-0 right-0 left-0 mx-auto">Mediscan</ion-title>
-            <button class="mr-0 ml-auto" mat-icon-button (click)="sidenav.toggle()">
-              <mat-icon>menu</mat-icon>
-            </button>
-          </div>
-        </ion-toolbar>
-      </ion-footer>
-    </mat-sidenav-content>
-  </mat-sidenav-container>
-</ion-app>
+<div class="h-full">
+  <ion-header class="absolute top-0">
+    <ion-toolbar class="ion-text-center">
+      <div class="flex justify-around">
+        <h4 class="header-title">Mérés</h4>
+      </div>
+    </ion-toolbar>
+  </ion-header>
+  <div class="background-container">
+    <div class="circle"></div>
+  </div>
+  <router-outlet />
+  <ion-footer class="absolute bottom-0">
+    <ion-toolbar class="ion-text-center">
+      <div class="flex justify-around">
+        <button class="flex gap-2" *ngFor="let p of getPages()" [routerLink]="[p.url]" routerLinkActive="selected">
+          <mat-icon>{{ p.icon }}</mat-icon>
+          <span>{{ p.title }}</span>
+        </button>
+      </div>
+    </ion-toolbar>
+  </ion-footer>
+</div>

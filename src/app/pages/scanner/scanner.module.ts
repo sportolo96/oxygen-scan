@@ -5,7 +5,9 @@ import {FormsModule} from '@angular/forms';
 import {ScannerRoutingModule} from './scanner-routing.module';
 import {ScannerComponent} from './scanner.component';
 import {MatButtonModule} from '@angular/material/button';
-import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
+import {MatTabsModule} from '@angular/material/tabs';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import {MatDialogActions, MatDialogClose, MatDialogContent, MatDialogTitle} from "@angular/material/dialog";
 
 @NgModule({
   imports: [
@@ -15,6 +17,11 @@ import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
     ScannerRoutingModule,
     MatButtonModule,
     MatProgressSpinnerModule,
+    MatTabsModule,
+    MatDialogTitle,
+    MatDialogContent,
+    MatDialogActions,
+    MatDialogClose,
   ],
   declarations: [ScannerComponent]
 })

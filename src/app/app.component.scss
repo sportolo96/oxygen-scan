@@ -1,27 +1,17 @@
 @import "./../global.scss";
 
-.sidenav-container {
-  height: 100%;
+.mat-mdc-menu-panel {
+  background-color: #1f1f1f!important;
+
+  .mat-icon {
+    color: white!important;
+  }
 }
 
-.sidenav {
-  width: 250px; /* Width of the sidenav */
+.mat-mdc-menu-item-text {
+  color: white;
 }
 
-ion-list-header {
-  font-weight: bold;
-  font-size: 1.2em;
-  padding: 16px;
-}
-
-ion-item {
-  --background: transparent; /* Transparent background */
-}
-
-ion-item:hover {
-  background: rgba(0, 0, 0, 0.1); /* Hover effect */
-}
-
-mat-icon {
-  font-size: 24px; /* Size of the icons */
+ion-footer .mat-icon {
+  color: white!important;
 }

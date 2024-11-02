@@ -23,7 +23,7 @@ export class SignupComponent implements OnInit {
     private authService: AuthService,
     private userService: UserService
   ) {
-    // Initialize the form group with validators
+
     this.signUpForm = new FormGroup({
       email: new FormControl('', [Validators.required, Validators.email]),
       password: new FormControl('', [Validators.required, Validators.minLength(6)]),
@@ -54,7 +54,7 @@ export class SignupComponent implements OnInit {
 
       this.userService.create(user).then(() => {
         console.log('User added successfully.');
-        this.router.navigateByUrl('/main');
+        this.router.navigateByUrl('/welcome');
         this.loading = false;
         this.setError(false);
       }).catch(error => {

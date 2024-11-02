@@ -1,0 +1,20 @@
+<h2 mat-dialog-title>Manuális rögzítés</h2>
+<mat-dialog-content>
+  <div class="flex flex-col gap-4"><mat-form-field>
+    <mat-label>Véroxigén szint</mat-label>
+    <input type="number" matInput [(ngModel)]="measurement.spo2" />
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Pulzus</mat-label>
+    <input type="number" matInput [(ngModel)]="measurement.pulse" />
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Pi</mat-label>
+    <input type="number" matInput [(ngModel)]="measurement.pi" />
+  </mat-form-field>
+  </div>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-button (click)="onClose()">Mégse</button>
+  <button mat-button  (click)="onSubmit()">Rögzítés</button>
+</mat-dialog-actions>

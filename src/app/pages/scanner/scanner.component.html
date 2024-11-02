@@ -1,56 +1,83 @@
 <div class="main_component flex gap-6">
-  <div class="z-10">
-    <ion-grid *ngIf="bluetoothConnectedDevice">
-      <ion-row>
-        <ion-col class="ion-margin-auto ion-text-start">
-          <p>{{bluetoothConnectedDevice.device?.name ?? "NO name" }}</p>
-          <ion-img class="device-image" src="../assets/img/viatom.png"></ion-img>
-        </ion-col>
-        <ion-col class="ion-margin-auto ion-text-start">
-          <ion-button expand="block" color="danger" *ngIf="bluetoothConnectedDevice"
-                      (click)="disconnectFromBluetoothDevice(bluetoothConnectedDevice)">Lecsatlakoztat
-          </ion-button>
-          <button class="rounded-start-button" [disabled]="started" (click)="startMonitoring()">
-            <mat-spinner *ngIf="started" class="button-spinner" [diameter]="30"></mat-spinner>
-            Monitorozás indítása
-          </button>
-        </ion-col>
-      </ion-row>
-    </ion-grid>
-    <div class="device-container" *ngIf="!bluetoothConnectedDevice">
-      <button [disabled]="bluetoothIsScanning" class="cube-white-button" (click)="scanForBluetoothDevices()">
-        <mat-spinner [diameter]="30" class="button-spinner" *ngIf="bluetoothIsScanning"></mat-spinner>
-        Eszköz keresése
+
+  <span class="loading-indicator-container m-auto" *ngIf="bluetoothIsScanning">
+    <span class="loading-indicator">
+        <mat-spinner></mat-spinner>
+    </span>
+</span>
+  <div class="z-10 form-panel">
+
+    <div class="flex tab-container">
+      <div class="w-full p-1 tab-item-1">
+        <p>Automatikus</p>
+      </div>
+      <div class="w-full p-1 tab-item-2">
+        <p (click)="openDialog()">Manuális</p>
+      </div>
+    </div>
+
+    <div *ngIf="bluetoothConnectedDevice" class="py-5 flex gap-4 justify-around">
+      <div class="flex flex-row gap-3">
+        <ion-img class="device-image m-auto" src="../assets/img/viatom.png"></ion-img>
+        <p class="small-text">{{ bluetoothConnectedDevice.device?.name ?? "NO name" }}</p>
+      </div>
+      <button class="cube-white-button small-button"
+              (click)="disconnectFromBluetoothDevice(bluetoothConnectedDevice)">Lecsatlakoztat
       </button>
-      <ion-grid *ngIf="bluetoothScanResults.length">
-        <ion-row *ngFor="let scanResult of bluetoothScanResults">
-          <ion-col class="ion-margin-auto ion-text-start">
-            <ion-img class="device-image" src="../assets/img/viatom.png"></ion-img>
-          </ion-col>
-          <ion-col class="ion-margin-auto ion-text-start">
-            <p>{{scanResult.device?.name ?? "NO name" }}</p>
-            <ion-button expand="block" color="success" *ngIf="!bluetoothConnectedDevice"
-                        (click)="connectToBluetoothDevice(scanResult)">Csatlakozás
-            </ion-button>
-          </ion-col>
-        </ion-row>
-        <hr>
-      </ion-grid>
+    </div>
+
+    <div class="device-container py-5 flex gap-4 justify-around flex-col" *ngIf="!bluetoothConnectedDevice">
+      <button *ngIf="!bluetoothScanResults.length" [disabled]="bluetoothIsScanning"
+              class="cube-white-button collored-button" (click)="scanForBluetoothDevices()">Új eszköz
+      </button>
+
+      <div *ngFor="let scanResult of bluetoothScanResults">
+        <div class="flex gap-4 justify-around">
+          <div class="flex flex-row gap-3">
+            <ion-img class="device-image m-auto" src="../assets/img/viatom.png"></ion-img>
+            <p class="small-text">{{ scanResult.device?.name ?? "NO name" }}</p>
+          </div>
+          <button class="cube-white-button small-button collored-button" *ngIf="!bluetoothConnectedDevice"
+                  (click)="connectToBluetoothDevice(scanResult)">Csatlakozás
+          </button>
+        </div>
+        <hr *ngIf="bluetoothScanResults.length > 1" class="divider">
+      </div>
+
     </div>
   </div>
 
-  <canvas *ngIf="measurementResult?.pulse || averageMeasurementResult.pulse" id="pulseChart"></canvas>
-  <div *ngIf="measurementResult?.pulse">
-    <ion-text color="dark"><p>Pulzus: {{measurementResult?.pulse ?? "no pulse data" }}</p></ion-text>
-    <ion-text color="dark"><p>SPO2: {{measurementResult?.spo2 ?? "no spo2 data" }}</p></ion-text>
-    <ion-text color="dark"><p>PI: {{measurementResult?.pi ?? "no pi data" }}</p></ion-text>
+  <div class="start-button-container">
+    <button *ngIf="!started" class="rounded-start-button collored-button" [disabled]="started"
+            (click)="startMonitoring()">Mérés
+    </button>
+
+    <div *ngIf="started">
+      <button class="opacity-0 rounded-start-button collored-button" [disabled]="started" (click)="startMonitoring()">
+        Mérés
+      </button>
+      <div class="heart">
+        <p>{{ measurementResult?.spo2 }}</p>
+      </div>
+    </div>
   </div>
 
-  <div *ngIf="averageMeasurementResult.pulse">
-    <b>Mért eredmény (10s alatt):</b>
-    <ion-text color="dark"><p>Pulzus: {{averageMeasurementResult?.pulse ?? "no pulse data" }}</p></ion-text>
-    <ion-text color="dark"><p>SPO2: {{averageMeasurementResult?.spo2 ?? "no spo2 data" }}</p></ion-text>
-    <ion-text color="dark"><p>PI: {{averageMeasurementResult?.pi ?? "no pi data" }}</p></ion-text>
+  <div class="form-panel">
+    <canvas id="pulseChart"></canvas>
+    <div *ngIf="measurementResult" class="flex justify-around">
+      <p class="small-text">Pulzus: {{ measurementResult?.pulse ?? "no pulse data" }}</p>
+      <p class="small-text">SPO2: {{ measurementResult?.spo2 ?? "no spo2 data" }}</p>
+      <p class="small-text">PI: {{ measurementResult?.pi ?? "no pi data" }}</p>
+    </div>
+
+    <div *ngIf="averageMeasurementResult">
+      <b class="normal-text">Mért eredmény (10s alatt):</b>
+      <div class="flex justify-around">
+        <p class="small-text">Pulzus: {{ averageMeasurementResult?.pulse ?? "no pulse data" }}</p>
+        <p class="small-text">SPO2: {{ averageMeasurementResult?.spo2 ?? "no spo2 data" }}</p>
+        <p class="small-text">PI: {{ averageMeasurementResult?.pi ?? "no pi data" }}</p>
+      </div>
+    </div>
   </div>
 </div>
 

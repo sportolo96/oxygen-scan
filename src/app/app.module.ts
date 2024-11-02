@@ -17,6 +17,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 
 
 @NgModule({
@@ -37,7 +38,7 @@ import { MatMenuModule } from '@angular/material/menu';
     MatMenuModule
   ],
   declarations: [AppComponent],
-  providers: [AuthService, { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }],
+  providers: [AuthService, { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }, provideAnimationsAsync()],
   bootstrap: [AppComponent]
 })
 export class AppModule {}

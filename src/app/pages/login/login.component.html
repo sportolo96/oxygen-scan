@@ -1,18 +1,28 @@
-<span class="loading-indicator" *ngIf="loading">
-    <mat-spinner></mat-spinner>
-</span>
+<div class="main_component flex gap-6">
+        <span class="loading-indicator-container" *ngIf="loading">
+            <span class="loading-indicator">
+                <mat-spinner></mat-spinner>
+            </span>
+        </span>
 
-<div class="main_component">
-    <h1 class="mb-8 font-bold text-2xl">A méréshez jelentkezz be!</h1>
-    <mat-form-field>
-        <label class="contests" for="email">E-mail: </label><input matInput type="text" [formControl]="email" />
-    </mat-form-field>
-    <mat-form-field>
-        <label class="contests" for="password">Jelszó: </label><input matInput type="password" [formControl]="password" />
-    </mat-form-field>
-  <mat-error *ngIf="error">{{error}}</mat-error>
-  <span>
-        <button mat-fab extended (click)="login()">Belépés</button>
-        <button mat-fab extended [routerLink]="'/signup'">Regisztráció</button>
-    </span>
+        <form class="form-panel" [formGroup]="signInForm" >
+            <div class="flex flex-col gap-4">
+                <mat-form-field>
+                    <mat-label for="email">E-mail:</mat-label>
+                    <input matInput type="text" formControlName="email"/>
+                  </mat-form-field>
+                  <mat-form-field>
+                    <mat-label for="password">Jelszó:</mat-label>
+                    <input matInput type="password" formControlName="password"/>
+                  </mat-form-field>
+                <div class="h-8	w-full text-center pb-5">
+                    <mat-error *ngIf="error">{{error}}</mat-error>
+                </div>
+            </div>
+          <div class="flex gap-4 flex-col">
+            <span class="cube-white-button collored-button" (click)="login()" >Belépés</span>
+            <hr class="devider">
+            <button class="cube-white-button" extended [routerLink]="'/signup'">Regisztráció</button>
+        </div>
+        </form>
 </div>

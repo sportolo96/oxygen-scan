@@ -1,13 +1,15 @@
-import {Component, AfterViewInit} from '@angular/core';
+import {Component, ViewEncapsulation,AfterViewInit} from '@angular/core';
 import {NavigationEnd, Router} from '@angular/router';
 import {AuthService} from './shared/services/auth.service';
 import { filter } from 'rxjs/operators';
 import {MatSidenav} from '@angular/material/sidenav';
+import { LocalNotifications } from '@capacitor/local-notifications';
 
 @Component({
   selector: 'app-root',
   templateUrl: 'app.component.html',
   styleUrls: ['app.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 export class AppComponent implements AfterViewInit{
   title = 'Massage';
@@ -15,13 +17,55 @@ export class AppComponent implements AfterViewInit{
   routes: Array<string> = [];
   loggedInUser?: firebase.default.User | null;
   appPages = [
-    { title: 'Scanner', url: '/scanner', icon: 'camera' },
-    { title: 'Main', url: '/main', icon: 'list' },
-    { title: 'Sign Up', url: '/signup', icon: 'person-add' },
-    { title: 'Login', url: '/login', icon: 'input' },
+    { title: 'Profil', url: 'welcome', icon: 'supervised_user_circle', authRoute: null },
+    { title: 'Mérés', url: 'scanner', icon: 'camera', authRoute: false },
   ];
 
   constructor(private authService: AuthService, private router: Router) {
+    this.scheduleNotification().then(r => console.log("alma"));
+  }
+
+  async scheduleNotification() {
+    // Kérd az értesítési engedélyeket
+    const permStatus = await LocalNotifications.requestPermissions();
+
+    if (permStatus.display === 'granted') {
+      // Ütemezz egy helyi értesítést egy perc késleltetéssel
+      await LocalNotifications.schedule({
+        notifications: [
+          {
+            title: 'Push Notification',
+            body: 'This is a test notification scheduled for 1 minute later',
+            id: 1,
+            schedule: {
+              repeats: true,
+              every: "day",
+              at: new Date(new Date().setHours(11, 15, 0)),  // minden nap délben
+            },
+            sound: 'default',
+            attachments: null,
+            actionTypeId: '',
+            extra: null,
+          },
+        ],
+      });
+    } else {
+      console.warn('User denied permissions for local notifications');
+    }
+  }
+
+  getPages() {
+    return this.appPages.filter(menuItem => {
+      if(menuItem.authRoute == null) {
+        return true;
+      }
+
+      if(!this.loggedInUser) {
+        return menuItem.authRoute === true;
+      }
+
+      return menuItem.authRoute === false;
+    })
   }
 
   // eslint-disable-next-line @angular-eslint/use-lifecycle-interface
