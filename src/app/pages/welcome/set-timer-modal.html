@@ -1,0 +1,22 @@
+<h2 mat-dialog-title>Időzített mérés felvétele</h2>
+<mat-dialog-content>
+  <div class="flex flex-col gap-4">
+    <mat-form-field>
+      <input matInput
+             name="selected_time_B"
+             [format]="24"
+             [(ngModel)]="time"
+             [ngxMatTimepicker]="pickerB"
+             readonly/>
+      <mat-icon matSuffix
+                (click)="pickerB.open()">
+        watch_later
+      </mat-icon>
+    </mat-form-field>
+    <ngx-mat-timepicker color="accent" #pickerB></ngx-mat-timepicker>
+  </div>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-button (click)="onClose()">Mégse</button>
+  <button mat-button (click)="onSubmit()">Rögzítés</button>
+</mat-dialog-actions>

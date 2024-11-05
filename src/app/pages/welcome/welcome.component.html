@@ -54,5 +54,17 @@
       </div>
     </div>
   </form>
+
+  <form class="form-panel">
+    <p class="normal-text">Időzített mérés</p>
+    <div class="my-auto flex-col justify-around gap-1">
+      <p *ngIf="timer.notificationId" class="small-text w-full">Minden nap: {{ timer.time }}</p>
+      <h1 *ngIf="!timer.notificationId" class="normal-text w-full">Nincs időzítő beállítva</h1>
+      <div class="my-auto flex justify-between">
+        <p class="normal-text cursor-pointer text-center" (click)="openDialog()">Új időzítő</p>
+        <p *ngIf="timer.notificationId" class="small-text cursor-pointer text-center" (click)="removeTimer()">Töröl</p>
+      </div>
+    </div>
+  </form>
 </div>
 

@@ -1,12 +1,15 @@
 <div class="main_component flex gap-6">
-  <h4 class="header-title">Korábbi mérési eredmények</h4>
-  <p *ngIf="!data.length">Jelenleg nincs még Önhöz tartozó méréseredmény!</p>
+  <span class="loading-indicator-container m-auto" *ngIf="loading">
+    <span class="loading-indicator">
+        <mat-spinner></mat-spinner>
+    </span>
+  </span>
   <div class="table table-container">
+    <p class="normal-text p-2" *ngIf="!data.length">Jelenleg nincs még Önhöz tartozó méréseredmény!</p>
     <table *ngIf="data.length" mat-table [dataSource]="data" class="mat-elevation-z8">
-
       <ng-container matColumnDef="date">
         <th mat-header-cell *matHeaderCellDef> Időpont</th>
-        <td mat-cell *matCellDef="let element"> {{element.date | date:'medium'}} </td>
+        <td mat-cell *matCellDef="let element"> {{element.date | date:'short'}} </td>
       </ng-container>
 
       <ng-container matColumnDef="pulse">
@@ -28,5 +31,5 @@
       <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
     </table>
   </div>
-  <button (click)="goToPage('scanner')" class="rounded-start-button">Új mérés</button>
+  <button class="cube-white-button !mt-0" extended (click)="export()">Export</button>
 </div>

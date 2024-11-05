@@ -5,12 +5,8 @@ const config: CapacitorConfig = {
   appName: 'OxygenScan',
   webDir: 'www',
   plugins: {
-    PushNotifications: {
-      presentationOptions: ["badge", "sound", "alert"],
-    },
-    LocalNotifications: {
-      "presentationOptions": ["badge", "sound", "alert"]
-    }
+    PushNotifications: {},
+    LocalNotifications: {}
   },
 };
 

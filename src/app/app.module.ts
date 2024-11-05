@@ -18,13 +18,18 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
-
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
+import { NgxMatTimepickerModule } from 'ngx-mat-timepicker';
 
 @NgModule({
   imports: [
     BrowserModule,
     IonicModule.forRoot(),
     AppRoutingModule,
+    MatIconModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
     BrowserAnimationsModule,
     AngularFireModule.initializeApp(environment.firebase),
     AngularFireAuthModule,
@@ -33,9 +38,9 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
     AngularFireDatabaseModule,
     MatSidenavModule,
     MatToolbarModule,
-    MatIconModule,
     MatButtonModule,
-    MatMenuModule
+    MatMenuModule,
+    NgxMatTimepickerModule
   ],
   declarations: [AppComponent],
   providers: [AuthService, { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }, provideAnimationsAsync()],
