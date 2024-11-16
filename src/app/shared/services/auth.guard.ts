@@ -22,13 +22,13 @@ export class AuthGuard implements CanActivate {
 
       if (user && route.url[0].path !== 'login' && route.url[0].path !== 'signup') {
         return true;
-      } else if (!user && (route.url[0].path === 'login' || route.url[0].path === 'signup' || route.url[0].path === 'welcome')) {
+      } else if (!user && (route.url[0].path === 'login' || route.url[0].path === 'signup' || route.url[0].path === 'welcome' || route.url[0].path === 'scanner')) {
         return true;
-      } else if (!user && (route.url[0].path !== 'login' && route.url[0].path !== 'signup' && route.url[0].path !== 'welcome')) {
+      } else if (!user && (route.url[0].path !== 'login' && route.url[0].path !== 'signup' && route.url[0].path !== 'welcome' && route.url[0].path !== 'scanner')) {
         this.router.navigate(['/login']);
         return true;
       }else if (user && (route.url[0].path === 'login' || route.url[0].path === 'signup')) {
-        this.router.navigate(['/main']);
+        this.router.navigate(['/welcome']);
         return true;
       }
       return false;

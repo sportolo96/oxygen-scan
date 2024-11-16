@@ -12,7 +12,7 @@ import { Router } from '@angular/router';
   styleUrls: ['./signup.component.scss']
 })
 export class SignupComponent implements OnInit {
-  
+
   signUpForm: FormGroup;
   loading = false;
   error: string | null = null;
@@ -28,10 +28,6 @@ export class SignupComponent implements OnInit {
       email: new FormControl('', [Validators.required, Validators.email]),
       password: new FormControl('', [Validators.required, Validators.minLength(6)]),
       rePassword: new FormControl('', [Validators.required]),
-      name: new FormGroup({
-        firstname: new FormControl('', [Validators.required]),
-        lastname: new FormControl('', [Validators.required])
-      })
     });
   }
 

@@ -43,7 +43,7 @@ main{
   position: relative;
   max-height: 100vh;
   margin-top: 3.2rem;
-  padding: 87px 0.7rem 3.5rem !important;
+  padding: 87px 0.7rem 7.5rem !important;
   flex-direction: column;
   align-items: center;
   justify-content: flex-start!important;
@@ -216,9 +216,8 @@ main{
   width: 4rem!important;
   height: 4rem!important;
   border-radius: 50%;
-  box-shadow: 1px 1px 2px black;
+  box-shadow: 1px 1px 1px black;
   padding: 5px;
-  background: linear-gradient(132deg, rgb(186, 186, 186) 0%, rgba(52, 152, 219, 0.331) 35%, rgb(52, 152, 219) 100%);
 }
 
 .normal-text {
@@ -322,4 +321,23 @@ main{
     bottom: 0;
     font-size: 2rem;
   }
+}
+
+.info-icon {
+  cursor: pointer;
+  color: black;
+  margin: 0 0 0 auto;
+}
+
+.white-text {
+  color: black;
+}
+.green-text {
+  color: green;
+}
+.orange-text {
+  color: orange;
+}
+.red-text {
+  color: red;
 }

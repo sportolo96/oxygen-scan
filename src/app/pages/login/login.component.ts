@@ -1,8 +1,8 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
-import { Observable, Subscription } from 'rxjs';
-import { AuthService } from '../../shared/services/auth.service';
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {FormControl, FormGroup, Validators} from '@angular/forms';
+import {Router} from '@angular/router';
+import {Observable, Subscription} from 'rxjs';
+import {AuthService} from '../../shared/services/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -30,7 +30,7 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   async login(): Promise<void> {
     this.loading = true;
-  
+
     const { email, password } = this.signInForm.value;
 
     if (!email || !password) {
@@ -38,10 +38,10 @@ export class LoginComponent implements OnInit, OnDestroy {
       this.loading = false;
       return;
     }
-  
+
     try {
       const cred = await this.authService.login(email, password);
-      this.router.navigateByUrl('/welcome');
+      window.location.reload();
       this.setError(false);
     } catch (error) {
       console.error(error);
@@ -50,7 +50,7 @@ export class LoginComponent implements OnInit, OnDestroy {
       this.loading = false;
     }
   }
-  
+
 
   setError(isError: boolean): void {
     this.error = isError ? 'Hibás email és jelszó páros!' : null;

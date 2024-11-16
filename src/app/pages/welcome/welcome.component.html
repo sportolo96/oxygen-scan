@@ -42,9 +42,28 @@
   <form class="form-panel">
     <p class="normal-text">Legutolsó mérés</p>
     <div class="flex justify-around" *ngIf="averageMeasurementResult?.pulse">
-      <p class="small-text">Pulzus: {{ averageMeasurementResult?.pulse ?? "no pulse data" }}</p>
-      <p class="small-text">SPO2: {{ averageMeasurementResult?.spo2 ?? "no spo2 data" }}</p>
-      <p class="small-text">PI: {{ averageMeasurementResult?.pi ?? "no pi data" }}</p>
+      <p class="small-text"
+         [ngClass]="{
+              'white-text': averageMeasurementResult?.pulse >= 100,
+              'green-text': averageMeasurementResult?.pulse >= 101 && averageMeasurementResult?.pulse <= 109,
+              'orange-text': averageMeasurementResult?.pulse >= 110 && averageMeasurementResult?.pulse <= 130,
+              'red-text': averageMeasurementResult?.pulse >= 130
+            }"
+      >Pulzus: {{ averageMeasurementResult?.pulse ?? "no pulse data" }}</p>
+      <p class="small-text"
+         [ngClass]="{
+              'white-text': averageMeasurementResult?.spo2 > 95,
+              'green-text': averageMeasurementResult?.spo2 === 95,
+              'orange-text': averageMeasurementResult?.spo2 >= 93 && averageMeasurementResult?.spo2 <= 94,
+              'red-text': averageMeasurementResult?.spo2 <= 92
+            }"
+      >SPO2: {{ averageMeasurementResult?.spo2 ?? "no spo2 data" }}</p>
+      <p class="small-text"
+         [ngClass]="{
+              'white-text': averageMeasurementResult?.pi >= 0.2 && averageMeasurementResult?.pi <= 20,
+              'red-text': averageMeasurementResult?.pi <= 0.2 || averageMeasurementResult?.pi >= 20
+            }"
+      >PI: {{ averageMeasurementResult?.pi ?? "no pi data" }}</p>
     </div>
 
     <div class="my-auto flex flex-col gap-1" *ngIf="!averageMeasurementResult?.pulse">

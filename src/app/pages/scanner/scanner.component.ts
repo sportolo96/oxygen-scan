@@ -1,6 +1,6 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
-import {AlertController} from '@ionic/angular';
+import {AlertController, IonicModule} from '@ionic/angular';
 import {DataService} from '../../shared/services/data.service';
 import {
   Chart,
@@ -83,6 +83,14 @@ export class ScannerComponent implements OnInit, OnDestroy {
     });
   }
 
+  openInfoDialog(): void {
+    const dialogRef = this.dialog.open(AppInfoModalPage, {
+      width: '100%',
+      maxWidth: '100vw',
+      height: 'auto'
+    });
+  }
+
   constructor(private router: Router, private dataService: DataService, private alertController: AlertController) {
     this.bluetoothConnectedDevice = JSON.parse(localStorage.getItem('bluetoothConnectedDevice') || '{}');
     if (!this.bluetoothConnectedDevice.device) {
@@ -124,8 +132,15 @@ export class ScannerComponent implements OnInit, OnDestroy {
     return Math.round(value * multiplier) / multiplier;
   }
 
-  addData() {
+  async addData() {
     const user = JSON.parse(localStorage.getItem('user') || '{}');
+
+    if (this.averageMeasurementResult?.pulse >= 130 || this.averageMeasurementResult?.spo2 <= 92 || (this.averageMeasurementResult?.pi <= 0.2 || this.averageMeasurementResult?.pi >= 20)) {
+      await this.presentAlert(
+        'Kritikus értékek!',
+        'Mielőbb végezzen új mérést. Amennyiben a továbbiakban is fenn állnak a mért értékek, kérjen mielőbbi segítséget!',
+      );
+    }
 
     // Ensure values are not null
     const spo2 = this.averageMeasurementResult.spo2 ?? 0; // Use a default value if null
@@ -158,7 +173,7 @@ export class ScannerComponent implements OnInit, OnDestroy {
     });
   }
 
-  createChart(result: { labels: string[]; values: number[] } = {labels: [], values: []}) {
+  createChart(result: { labels: string[]; spo2Values: number[]; pulseValues: number[]; piValues: number[] }) {
     const canvas = document.getElementById('pulseChart') as HTMLCanvasElement;
     const ctx = canvas.getContext('2d');
     if (ctx) {
@@ -166,17 +181,32 @@ export class ScannerComponent implements OnInit, OnDestroy {
         type: 'line',
         data: {
           labels: result.labels,
-          datasets: [{
-            data: result.values,
-            borderWidth: 1,
-            borderColor: '#FFAF00'
-          }]
+          datasets: [
+            {
+              label: 'SpO2',
+              data: result.spo2Values,
+              borderColor: '#FF5733', // Customize color for SpO2
+              borderWidth: 1,
+            },
+            {
+              label: 'Pulse',
+              data: result.pulseValues,
+              borderColor: '#33C1FF', // Customize color for Pulse
+              borderWidth: 1,
+            },
+            {
+              label: 'PI',
+              data: result.piValues,
+              borderColor: '#82E0AA', // Customize color for PI
+              borderWidth: 1,
+            }
+          ]
         },
         options: {
           scales: {
             y: {
-              min: 60,
-              max: 100,
+              min: 0,
+              max: 200,
             }
           }
         }
@@ -184,37 +214,41 @@ export class ScannerComponent implements OnInit, OnDestroy {
     }
   }
 
-  updateChart(arrayPulse: MeasurementResult[]) {
-    if (!arrayPulse.length) {
+  updateChart(array: MeasurementResult[]) {
+    if (!array.length) {
       return;
     }
 
-    const result = this.getValues(arrayPulse);
+    const result = this.getValues(array);
 
     // Convert labels from number[] to string[]
     const stringLabels = result.labels.map(label => label.toString());
 
     if (this.pulseChart) {
       this.pulseChart.data.labels = stringLabels; // Use string array here
-      this.pulseChart.data.datasets.forEach(dataset => {
-        dataset.data = result.values;
-      });
+      this.pulseChart.data.datasets[0].data = result.spo2Values; // SpO2 data
+      this.pulseChart.data.datasets[1].data = result.pulseValues; // Pulse data
+      this.pulseChart.data.datasets[2].data = result.piValues; // PI data
       this.pulseChart.update();
     } else {
-      this.createChart({labels: stringLabels, values: result.values}); // Pass as string[]
+      this.createChart({labels: stringLabels, spo2Values: result.spo2Values, pulseValues: result.pulseValues, piValues: result.piValues});
     }
   }
 
-
-  getValues(array: MeasurementResult[]): { labels: number[]; values: number[] } {
-    const valuesArray: number[] = [];
+  getValues(array: MeasurementResult[]): { labels: number[]; spo2Values: number[]; pulseValues: number[]; piValues: number[] } {
+    const spo2Values: number[] = [];
+    const pulseValues: number[] = [];
+    const piValues: number[] = [];
     const labelsArray: number[] = [];
+
     array.forEach((valueObject, index) => {
-      valuesArray.push(valueObject.pulse || 0);
+      spo2Values.push(valueObject.spo2 || 0);
+      pulseValues.push(valueObject.pulse || 0);
+      piValues.push(valueObject.pi || 0);
       labelsArray.push(index);
     });
 
-    return {labels: labelsArray, values: valuesArray};
+    return { labels: labelsArray, spo2Values, pulseValues, piValues };
   }
 
   async stopScanForBluetoothDevices() {
@@ -419,7 +453,13 @@ export class ScannerComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.averageMeasurementResult = JSON.parse(localStorage.getItem('averageMeasurementResult') || '{}');
 
-    this.createChart({labels: [], values: []});
+// Corrected call to createChart with the proper properties
+    this.createChart({
+      labels: [],
+      spo2Values: [],
+      pulseValues: [],
+      piValues: []
+    });
   }
 
   ngOnDestroy() {
@@ -480,5 +520,29 @@ export class AppManualModalPage {
     }
 
     this.dialogRef.close(this.measurement);
+  }
+}
+
+@Component({
+  selector: 'app-info-modal',
+  templateUrl: 'info-modal.html',
+  standalone: true,
+  imports: [
+    MatFormFieldModule,
+    MatInputModule,
+    FormsModule,
+    MatButtonModule,
+    MatDialogTitle,
+    MatDialogContent,
+    MatDialogActions,
+    MatDialogClose,
+    IonicModule,
+  ],
+})
+export class AppInfoModalPage {
+  readonly dialogRef = inject(MatDialogRef<AppManualModalPage>);
+
+  onClose(): void {
+    this.dialogRef.close();
   }
 }

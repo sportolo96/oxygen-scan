@@ -19,6 +19,7 @@ import {MatDatepicker, MatDatepickerInput, MatDatepickerToggle} from "@angular/m
 import {NgxMatTimepickerComponent, NgxMatTimepickerDirective} from "ngx-mat-timepicker";
 import {MatIcon} from "@angular/material/icon";
 import {ScheduleOn} from "@capacitor/local-notifications/dist/esm/definitions";
+import {User} from "../../shared/models/User";
 
 export interface MeasurementResult {
   spo2: number | null;
@@ -39,22 +40,17 @@ export interface Timer {
 
 export class WelcomeComponent implements OnInit {
 
-  bluetoothConnectedDevice?: ScanResult;
   loading = false;
   timer: Timer = JSON.parse(localStorage.getItem('timer') || '{}');
-  user = JSON.parse(localStorage.getItem('user') || '{}');
+  user: User = JSON.parse(localStorage.getItem('user') || '{}');
   readonly dialog = inject(MatDialog);
+  bluetoothConnectedDevice: ScanResult = JSON.parse(localStorage.getItem('bluetoothConnectedDevice') || '{}');
   averageMeasurementResult: MeasurementResult = JSON.parse(localStorage.getItem('averageMeasurementResult') || '{}');
 
   constructor(private router: Router, private authService: AuthService, private alertController: AlertController) {
-    this.bluetoothConnectedDevice = JSON.parse(localStorage.getItem('bluetoothConnectedDevice') || '{}');
   }
 
   ngOnInit(): void {
-  }
-
-  goToPage(pageName: string) {
-    this.router.navigate([`${pageName}`]);
   }
 
   async presentAlert(text: string, subtext: string) {
@@ -71,17 +67,18 @@ export class WelcomeComponent implements OnInit {
   logout() {
     this.authService.logout();
     this.presentAlert(
-      'Sikeres kijelentkezés!',
+      '',
       `Sikeresen kijelentkezett fiókjából`
     );
-    window.location.reload()
+    this.user = null;
   }
 
   async disconnectFromBluetoothDevice(scanResult: ScanResult) {
-    const device = scanResult.device;
+    this.bluetoothConnectedDevice = undefined;
+    localStorage.removeItem('bluetoothConnectedDevice');
+
     try {
       await BleClient.disconnect(scanResult.device.deviceId);
-      const deviceName = device.name ?? device.deviceId;
       this.bluetoothConnectedDevice = undefined;
       localStorage.removeItem('bluetoothConnectedDevice')
     } catch (error) {
@@ -90,16 +87,24 @@ export class WelcomeComponent implements OnInit {
     }
   }
 
-  async scheduleNotification(timer: null|Timer) {
-    if (!timer.time) {
+  async scheduleNotification(timer: null | Timer) {
+    if (!timer || !timer.time) {
       return;
     }
-    await this.clearAllNotifications(timer.notificationId)
+
+    await this.clearAllNotifications(timer.notificationId);
 
     const permStatus = await LocalNotifications.requestPermissions();
+    const now = new Date();
     const today = new Date();
-    const [hours, minutes] = this.timer.time.split(':').map(Number);
+    const [hours, minutes] = timer.time.split(':').map(Number);
     today.setHours(hours, minutes, 0, 0);
+
+    // If the specified time has already passed today, schedule it for tomorrow
+    if (today <= now) {
+      today.setDate(today.getDate() + 1);
+    }
+
     if (permStatus.display === 'granted') {
       await LocalNotifications.schedule({
         notifications: [
@@ -114,7 +119,7 @@ export class WelcomeComponent implements OnInit {
               on: {
                 hour: today.getHours(),
                 minute: today.getMinutes(),
-              }
+              },
             },
             sound: 'default',
             attachments: null,
@@ -128,9 +133,9 @@ export class WelcomeComponent implements OnInit {
     }
   }
 
-  async clearAllNotifications(id: null|number) {
+  async clearAllNotifications(id: null | number) {
     await LocalNotifications.removeAllDeliveredNotifications();
-    await LocalNotifications.cancel({ notifications: [{ id: id }] });
+    await LocalNotifications.cancel({notifications: [{id: id}]});
     console.log('All notifications have been cancelled.');
   }
 
@@ -154,6 +159,8 @@ export class WelcomeComponent implements OnInit {
   removeTimer(): void {
     this.clearAllNotifications(this.timer.notificationId).then(r => console.log('removed_timer'));
     localStorage.removeItem('timer');
+    this.timer = JSON.parse('{}');
+
   }
 }
 

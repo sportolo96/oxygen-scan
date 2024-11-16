@@ -8,21 +8,23 @@ import {MatButtonModule} from '@angular/material/button';
 import {MatTabsModule} from '@angular/material/tabs';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import {MatDialogActions, MatDialogClose, MatDialogContent, MatDialogTitle} from "@angular/material/dialog";
+import {MatIcon} from "@angular/material/icon";
 
 @NgModule({
-  imports: [
-    IonicModule,
-    CommonModule,
-    FormsModule,
-    ScannerRoutingModule,
-    MatButtonModule,
-    MatProgressSpinnerModule,
-    MatTabsModule,
-    MatDialogTitle,
-    MatDialogContent,
-    MatDialogActions,
-    MatDialogClose,
-  ],
+    imports: [
+        IonicModule,
+        CommonModule,
+        FormsModule,
+        ScannerRoutingModule,
+        MatButtonModule,
+        MatProgressSpinnerModule,
+        MatTabsModule,
+        MatDialogTitle,
+        MatDialogContent,
+        MatDialogActions,
+        MatDialogClose,
+        MatIcon,
+    ],
   declarations: [ScannerComponent]
 })
 export class ScannerModule {

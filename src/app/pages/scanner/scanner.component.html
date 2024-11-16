@@ -63,19 +63,59 @@
   </div>
 
   <div class="form-panel">
-    <canvas id="pulseChart"></canvas>
-    <div *ngIf="measurementResult" class="flex justify-around">
-      <p class="small-text">Pulzus: {{ measurementResult?.pulse ?? "no pulse data" }}</p>
-      <p class="small-text">SPO2: {{ measurementResult?.spo2 ?? "no spo2 data" }}</p>
-      <p class="small-text">PI: {{ measurementResult?.pi ?? "no pi data" }}</p>
+    <div class="flex justify-around">
+      <div *ngIf="measurementResult.spo2" class="flex w-full">
+        <p class="small-text"
+           [ngClass]="{
+              'white-text': measurementResult?.pulse >= 100,
+              'green-text': measurementResult?.pulse >= 101 && measurementResult?.pulse <= 109,
+              'orange-text': measurementResult?.pulse >= 110 && measurementResult?.pulse <= 130,
+              'red-text': measurementResult?.pulse >= 130
+            }"
+        >Pulzus: {{ measurementResult?.pulse ?? "" }}</p>
+        <p class="small-text"
+           [ngClass]="{
+              'white-text': measurementResult?.spo2 > 95,
+              'green-text': measurementResult?.spo2 === 95,
+              'orange-text': measurementResult?.spo2 >= 93 && measurementResult?.spo2 <= 94,
+              'red-text': measurementResult?.spo2 <= 92
+            }"
+        >SPO2: {{ measurementResult?.spo2 ?? "" }}</p>
+        <p class="small-text"
+           [ngClass]="{
+              'white-text': measurementResult?.pi >= 0.2 && measurementResult?.pi <= 20,
+              'red-text': measurementResult?.pi <= 0.2 || measurementResult?.pi >= 20
+            }"
+        >PI: {{ measurementResult?.pi ?? "" }}</p>
+      </div>
+      <mat-icon class="info-icon" (click)="openInfoDialog()">info</mat-icon>
     </div>
-
-    <div *ngIf="averageMeasurementResult">
+    <canvas id="pulseChart"></canvas>
+    <div *ngIf="averageMeasurementResult?.spo2">
       <b class="normal-text">Mért eredmény (10s alatt):</b>
       <div class="flex justify-around">
-        <p class="small-text">Pulzus: {{ averageMeasurementResult?.pulse ?? "no pulse data" }}</p>
-        <p class="small-text">SPO2: {{ averageMeasurementResult?.spo2 ?? "no spo2 data" }}</p>
-        <p class="small-text">PI: {{ averageMeasurementResult?.pi ?? "no pi data" }}</p>
+        <p
+          [ngClass]="{
+              'white-text': averageMeasurementResult?.pulse >= 100,
+              'green-text': averageMeasurementResult?.pulse >= 101 && averageMeasurementResult?.pulse <= 109,
+              'orange-text': averageMeasurementResult?.pulse >= 110 && averageMeasurementResult?.pulse <= 130,
+              'red-text': averageMeasurementResult?.pulse >= 130
+            }"
+          class="small-text">Pulzus: {{ averageMeasurementResult?.pulse ?? "" }}</p>
+        <p
+          [ngClass]="{
+              'white-text': averageMeasurementResult?.spo2 > 95,
+              'green-text': averageMeasurementResult?.spo2 === 95,
+              'orange-text': averageMeasurementResult?.spo2 >= 93 && averageMeasurementResult?.spo2 <= 94,
+              'red-text': averageMeasurementResult?.spo2 <= 92
+            }"
+          class="small-text">SPO2: {{ averageMeasurementResult?.spo2 ?? "" }}</p>
+        <p class="small-text"
+           [ngClass]="{
+              'white-text': averageMeasurementResult?.pi >= 0.2 && averageMeasurementResult?.pi <= 20,
+              'red-text': averageMeasurementResult?.pi <= 0.2 || averageMeasurementResult?.pi >= 20
+            }"
+        >PI: {{ averageMeasurementResult?.pi ?? "" }}</p>
       </div>
     </div>
   </div>
