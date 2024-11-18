@@ -13,9 +13,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: npm run build
+      - run: npm ci && npm run build
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
-          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_MEDISCAN_24E67 }}
-          projectId: mediscan-24e67
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_OXYGENSCAN_3EA1F }}
+          projectId: oxygenscan-3ea1f

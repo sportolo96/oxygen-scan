@@ -1,42 +1,33 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
-import { AuthGuard } from './shared/services/auth.guard';
+import { authGuard } from './shared/guards/auth.guard';
 
 const routes: Routes = [
   {
     path: '',
-    redirectTo: '/welcome',
+    redirectTo: '/home',
     pathMatch: 'full'
   },
   {
-    path: 'main',
-    loadChildren: () => import('./pages/main/main.module').then(m => m.MainModule),
-    canActivate: [AuthGuard]
+    path: 'history',
+    loadChildren: () => import('./history/history.module').then(m => m.HistoryModule),
+    canActivate: [authGuard]
   },
   {
     path: 'scanner',
-    loadChildren: () => import('./pages/scanner/scanner.module').then(m => m.ScannerModule),
-    canActivate: [AuthGuard]
-  },
-  {
-    path: 'contact',
-    loadChildren: () => import('./pages/contact/contact.module').then(m => m.ContactModule)
+    loadChildren: () => import('./scanner/scanner.module').then(m => m.ScannerModule),
   },
   {
     path: 'not-found',
-    loadChildren: () => import('./pages/not-found/not-found.module').then(m => m.NotFoundModule)
+    loadChildren: () => import('./not-found/not-found.module').then(m => m.NotFoundModule)
   },
   {
-    path: 'welcome',
-    loadChildren: () => import('./pages/welcome/welcome.module').then(m => m.WelcomeModule)
+    path: 'home',
+    loadChildren: () => import('./home/home.module').then(m => m.HomeModule)
   },
-  { path: 'login',
-    loadChildren: () => import('./pages/login/login.module').then(m => m.LoginModule),
-    canActivate: [AuthGuard]
-  },
-  { path: 'signup',
-    loadChildren: () => import('./pages/signup/signup.module').then(m => m.SignupModule),
-    canActivate: [AuthGuard]
+  {
+    path: 'auth',
+    loadChildren: () => import('./auth/auth.module').then((m) => m.AuthModule),
   },
   {
     path: '**',

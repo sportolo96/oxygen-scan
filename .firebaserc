@@ -1,5 +1,8 @@
 {
   "projects": {
-    "default": "mediscan-24e67"
-  }
+    "staging": "oxygenscan-3ea1f",
+    "default": "oxygenscan-3ea1f"
+  },
+  "targets": {},
+  "etags": {}
 }

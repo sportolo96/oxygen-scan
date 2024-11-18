@@ -1,0 +1,18 @@
+<h2 mat-dialog-title>Kép méretezés</h2>
+<mat-dialog-content>
+  <image-cropper
+    [imageChangedEvent]="data"
+    [maintainAspectRatio]="true"
+    [roundCropper] = "true"
+    [resizeToWidth]="256"
+    format="png"
+    (imageCropped)="imageCropped($event)"
+  ></image-cropper>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-stroked-button color="accent" (click)="onClose()" type="button">
+    Mégsem
+  </button>
+  <button mat-flat-button color="accent" (click)="saveCroppedImage()">
+    Mentés
+  </button></mat-dialog-actions>

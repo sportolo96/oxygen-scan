@@ -21,6 +21,7 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { NgxMatTimepickerModule } from 'ngx-mat-timepicker';
+import {HeaderTitleService} from "./shared/services/headerTitle.service";
 
 @NgModule({
   imports: [
@@ -43,7 +44,7 @@ import { NgxMatTimepickerModule } from 'ngx-mat-timepicker';
     NgxMatTimepickerModule
   ],
   declarations: [AppComponent],
-  providers: [AuthService, { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }, provideAnimationsAsync()],
+  providers: [AuthService, HeaderTitleService, { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }, provideAnimationsAsync()],
   bootstrap: [AppComponent]
 })
 export class AppModule {}

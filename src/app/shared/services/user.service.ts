@@ -1,6 +1,10 @@
-import { Injectable } from '@angular/core';
-import { AngularFirestore } from '@angular/fire/compat/firestore';
-import { User } from '../models/User';
+import {Injectable} from '@angular/core';
+import {AngularFirestore} from '@angular/fire/compat/firestore';
+import {User} from '../models/User';
+import {ImageService} from "./image.service";
+import {DataService} from "./data.service";
+import {AuthService} from "./auth.service";
+import {AngularFireAuth} from "@angular/fire/compat/auth";
 
 @Injectable({
   providedIn: 'root'
@@ -9,12 +13,14 @@ export class UserService {
 
   collectionName = 'Users';
 
-  constructor(private afs: AngularFirestore) { }
+  constructor(private afs: AngularFirestore, private imageService: ImageService, private dataService: DataService, private authService: AuthService, private afAuth: AngularFireAuth) {
+  }
 
-  // CRUD (Create, Read, Update, Delete)
-
-  create(user: User) {
-    return this.afs.collection<User>(this.collectionName).doc(user.id).set(user);
+  create(user: User): Promise<void> {
+    return this.afs
+      .collection<User>(this.collectionName)
+      .doc(user.uid)
+      .set(user);
   }
 
   getAll() {
@@ -26,7 +32,7 @@ export class UserService {
   }
 
   update(user: User) {
-    return this.afs.collection<User>(this.collectionName).doc(user.id).set(user);
+    return this.afs.collection<User>(this.collectionName).doc(user.uid).set(user);
   }
 
   delete(id: string) {

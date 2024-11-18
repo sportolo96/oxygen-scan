@@ -1,0 +1,55 @@
+<div class="main_component flex gap-6">
+  <!-- Loading Spinner -->
+  <span class="loading-indicator-container m-auto" *ngIf="loading">
+    <span class="loading-indicator">
+      <mat-spinner></mat-spinner>
+    </span>
+  </span>
+
+  <!-- Form Panel -->
+  <form class="form-panel" [formGroup]="signInForm" (ngSubmit)="onSubmit()">
+    <!-- Form Fields -->
+    <div class="flex flex-col gap-4">
+
+      <!-- Email Field -->
+      <mat-form-field>
+        <mat-label for="email">E-mail:</mat-label>
+        <input matInput type="email" formControlName="email" id="email" required />
+        <mat-error *ngIf="signInForm.controls['email'].hasError('required')">
+          E-mail megadása kötelező.
+        </mat-error>
+        <mat-error *ngIf="signInForm.controls['email'].hasError('email')">
+          Érvénytelen e-mail cím.
+        </mat-error>
+      </mat-form-field>
+
+      <!-- Password Field -->
+      <mat-form-field>
+        <mat-label for="password">Jelszó:</mat-label>
+        <input matInput type="password" formControlName="password" id="password" required />
+        <mat-error *ngIf="signInForm.controls['password'].hasError('required')">
+          Jelszó megadása kötelező.
+        </mat-error>
+      </mat-form-field>
+
+      <!-- Remember Me Checkbox -->
+      <mat-checkbox formControlName="rememberMe">Emlékezz rám!</mat-checkbox>
+
+      <!-- Error Message -->
+      <div class="h-8 w-full text-center pb-5">
+        <mat-error *ngIf="error">{{ error }}</mat-error>
+      </div>
+    </div>
+
+    <!-- Buttons -->
+    <div class="flex gap-4 flex-col">
+      <button class="cube-white-button collored-button" type="submit" [disabled]="loading">
+        Belépés
+      </button>
+      <hr class="devider">
+      <button class="cube-white-button" [routerLink]="'/auth/register'">
+        Regisztráció
+      </button>
+    </div>
+  </form>
+</div>

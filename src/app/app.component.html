@@ -1,22 +1,29 @@
-<div class="h-full">
+<div class="h-screen overflow-hidden">
   <ion-header class="absolute top-0">
     <ion-toolbar class="ion-text-center">
-      <div class="flex justify-around">
-        <h4 class="header-title">Mérés</h4>
+      <div class="flex justify-around pt-8">
+        <h4 class="header-title">{{ headerTitle }}</h4>
       </div>
     </ion-toolbar>
   </ion-header>
   <div class="background-container">
     <div class="circle"></div>
   </div>
-  <router-outlet />
+  <router-outlet/>
   <ion-footer class="absolute bottom-0">
     <ion-toolbar class="ion-text-center">
-      <div class="flex justify-around">
-        <button class="flex gap-2" *ngFor="let p of getPages()" [routerLink]="[p.url]" routerLinkActive="selected">
+      <div class="flex justify-around pb-9 pt-2">
+        <button
+          class="flex gap-2 menu-button"
+          *ngFor="let p of getPages()"
+          [routerLink]="[p.url]"
+          routerLinkActive="selected"
+          [routerLinkActiveOptions]="{ exact: true }">
+
           <mat-icon>{{ p.icon }}</mat-icon>
           <span>{{ p.title }}</span>
         </button>
+
       </div>
     </ion-toolbar>
   </ion-footer>

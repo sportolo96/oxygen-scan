@@ -1,0 +1,18 @@
+<h2 mat-dialog-title>Biztosan törölné profilját?</h2>
+<mat-dialog-content class="flex-row gap-3">
+  <p class="small-text">Véglegesen töröljük minden felhőben tárolt adatát.</p>
+</mat-dialog-content>
+
+<mat-dialog-content class="flex-row gap-3">
+  <form [formGroup]="deleteForm">
+    <mat-form-field class="w-full">
+      <mat-label for="password">Jelszó:</mat-label>
+      <input matInput class="w-full" formControlName="password" type="password"/>
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions>
+  <button mat-button (click)="onClose()">Mégse</button>
+  <button mat-button (click)="onOk()">Végleges törlés</button>
+</mat-dialog-actions>

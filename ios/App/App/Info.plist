@@ -51,5 +51,11 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<true/>
+	<key>NSCameraUsageDescription</key>
+  <string>Ez az alkalmazás a kamera használatát kéri a profilkép készítéséhez.</string>
+  <key>NSPhotoLibraryUsageDescription</key>
+  <string>Ez az alkalmazás hozzáférést kér a fényképeidhez.</string>
+  <key>NSPhotoLibraryAddUsageDescription</key>
+  <string>Ez az alkalmazás hozzáférést kér a fényképek hozzáadásához.</string>
 </dict>
 </plist>

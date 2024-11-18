@@ -1,0 +1,32 @@
+<div class="main_component flex gap-6">
+  <span class="loading-indicator-container m-auto" *ngIf="loading">
+      <span class="loading-indicator">
+          <mat-spinner></mat-spinner>
+      </span>
+  </span>
+
+  <form class="form-panel" [formGroup]="signUpForm" (ngSubmit)="onSubmit()">
+    <div class="flex flex-col gap-4">
+      <mat-form-field>
+        <mat-label for="email">E-mail:</mat-label>
+        <input matInput type="text" formControlName="email"/>
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label for="password">Jelszó (min 6 karakter):</mat-label>
+        <input matInput type="password" formControlName="password"/>
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label for="rePassword">Jelszó megerősítése:</mat-label>
+        <input matInput type="password" formControlName="rePassword"/>
+      </mat-form-field>
+      <div class="h-8	w-full text-center pb-5">
+        <mat-error *ngIf="error">{{ error }}</mat-error>
+      </div>
+    </div>
+    <div class="flex gap-4 flex-col">
+      <button class="cube-white-button collored-button" extended>Regisztráció</button>
+      <hr class="devider">
+      <button class="cube-white-button" extended [routerLink]="'/auth/login'">Bejelentkezés</button>
+    </div>
+  </form>
+</div>
