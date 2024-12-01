@@ -53,13 +53,6 @@ export class AuthService {
     });
   }
 
-  update(user: User): Promise<void> {
-    return this.angularFirestore
-      .collection<User>(this.collectionName)
-      .doc(user.uid)
-      .set(user);
-  }
-
   async checkPassword(password: string): Promise<boolean> {
     const user = await this.auth.currentUser;
     if (user) {

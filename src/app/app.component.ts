@@ -6,6 +6,7 @@ import {LocalNotifications} from '@capacitor/local-notifications';
 import {HeaderTitleService} from "./shared/services/headerTitle.service";
 import {Capacitor} from "@capacitor/core";
 import {StatusBar, Style} from "@capacitor/status-bar";
+import firebase from "firebase/compat/app";
 
 export interface Timer {
   time: string;
@@ -23,7 +24,7 @@ export class AppComponent implements AfterViewInit, OnInit {
   page = '';
   headerTitle: string;
   routes: Array<string> = [];
-  loggedInUser?: firebase.default.User | null;
+  loggedInUser?: firebase.User | null;
   appPages = [
     {title: 'Előzmények', url: 'history', icon: 'dns', authRoute: true},
     {title: 'Mérés', url: 'scanner', icon: 'camera', authRoute: null},
@@ -59,11 +60,7 @@ export class AppComponent implements AfterViewInit, OnInit {
         return true;
       }
 
-      if (!this.loggedInUser) {
-        return menuItem.authRoute === true;
-      }
-
-      return menuItem.authRoute === false;
+      return this.loggedInUser && menuItem.authRoute;
     })
   }
 

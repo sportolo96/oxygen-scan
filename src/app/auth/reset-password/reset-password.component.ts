@@ -99,7 +99,7 @@ export class ResetPasswordComponent implements OnInit {
   async presentAlert(messages: string[]): Promise<void> {
     const alert = await this.alertController.create({
       header: 'Figyelem!',
-      message: messages.join('<br>'),
+      message: messages.join(' '),
       buttons: ['OK']
     });
     await alert.present();

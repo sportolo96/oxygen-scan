@@ -217,8 +217,10 @@ export class HomeComponent implements OnInit, OnDestroy {
               localStorage.removeItem('user');
               localStorage.removeItem('averageMeasurementResult');
               localStorage.removeItem('profilePicture');
-              this.presentAlert('Sikeresen törölte profilját!', '');
+              this.user = null;
+              this.image = DEFAULT_IMAGE;
               location.reload();
+              this.presentAlert('Sikeresen törölte profilját!', '');
               return;
             });
           });

@@ -90,7 +90,6 @@ export class RegisterComponent implements OnInit {
   async presentAlert(messages: string[]): Promise<void> {
     const alert = await this.alertController.create({
       header: 'Figyelem!',
-      message: messages.join('<br>'),
       buttons: ['OK'],
     });
     await alert.present();

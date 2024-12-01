@@ -138,22 +138,23 @@ export class ScannerComponent implements OnInit, OnDestroy {
   async addData() {
     const user = JSON.parse(localStorage.getItem('user') || '{}');
 
-    if (this.averageMeasurementResult?.pulse >= 130 || this.averageMeasurementResult?.spo2 <= 92 || (this.averageMeasurementResult?.pi <= 0.2 || this.averageMeasurementResult?.pi >= 20)) {
+    if (this.averageMeasurementResult?.pulse >= 130 ||
+      this.averageMeasurementResult?.spo2 <= 92 ||
+      (this.averageMeasurementResult?.pi <= 0.2 || this.averageMeasurementResult?.pi >= 20)
+    ) {
       await this.presentAlert(
         'Kritikus értékek!',
         'Mielőbb végezzen új mérést. Amennyiben a továbbiakban is fenn állnak a mért értékek, kérjen mielőbbi segítséget!',
       );
     }
 
-    // Ensure values are not null
-    const spo2 = this.averageMeasurementResult.spo2 ?? 0; // Use a default value if null
-    const pi = this.averageMeasurementResult.pi ?? 0; // Use a default value if null
-    const pulse = this.averageMeasurementResult.pulse ?? 0; // Use a default value if null
+    const spo2 = this.averageMeasurementResult.spo2 ?? 0;
+    const pi = this.averageMeasurementResult.pi ?? 0;
+    const pulse = this.averageMeasurementResult.pulse ?? 0;
 
     if (
       spo2 === 0 ||
-      !user.email //||
-      //this.dps.length < 7
+      !user.email
     ) {
       return;
     }
@@ -188,19 +189,19 @@ export class ScannerComponent implements OnInit, OnDestroy {
             {
               label: 'SpO2',
               data: result.spo2Values,
-              borderColor: '#FF5733', // Customize color for SpO2
+              borderColor: '#FF5733',
               borderWidth: 1,
             },
             {
               label: 'Pulse',
               data: result.pulseValues,
-              borderColor: '#33C1FF', // Customize color for Pulse
+              borderColor: '#33C1FF',
               borderWidth: 1,
             },
             {
               label: 'PI',
               data: result.piValues,
-              borderColor: '#82E0AA', // Customize color for PI
+              borderColor: '#82E0AA',
               borderWidth: 1,
             }
           ]
@@ -223,15 +224,13 @@ export class ScannerComponent implements OnInit, OnDestroy {
     }
 
     const result = this.getValues(array);
-
-    // Convert labels from number[] to string[]
     const stringLabels = result.labels.map(label => label.toString());
 
     if (this.pulseChart) {
-      this.pulseChart.data.labels = stringLabels; // Use string array here
-      this.pulseChart.data.datasets[0].data = result.spo2Values; // SpO2 data
-      this.pulseChart.data.datasets[1].data = result.pulseValues; // Pulse data
-      this.pulseChart.data.datasets[2].data = result.piValues; // PI data
+      this.pulseChart.data.labels = stringLabels;
+      this.pulseChart.data.datasets[0].data = result.spo2Values;
+      this.pulseChart.data.datasets[1].data = result.pulseValues;
+      this.pulseChart.data.datasets[2].data = result.piValues;
       this.pulseChart.update();
     } else {
       this.createChart({
@@ -311,7 +310,8 @@ export class ScannerComponent implements OnInit, OnDestroy {
     if (!await this.connectToBluetoothDevice(this.bluetoothConnectedDevice)) {
       await this.presentAlert(
         '',
-        `A(z) (${this.bluetoothConnectedDevice?.device?.name ?? this.bluetoothConnectedDevice?.device?.deviceId}) oxigénszintmérőt nem lehet elérni.`,
+        `A(z) (${this.bluetoothConnectedDevice?.device?.name ??
+        this.bluetoothConnectedDevice?.device?.deviceId}) oxigénszintmérőt nem lehet elérni.`,
       );
       this.endScan = true;
       this.started = false;
@@ -325,28 +325,25 @@ export class ScannerComponent implements OnInit, OnDestroy {
     await this.getDeviceNotify();
     this.calculateAverage(this.dps);
     this.updateChart(this.dps);
-    this.addData();
+    await this.addData();
   }
 
   async getDeviceNotify() {
     if (this.endScan) {
-      // Safely access deviceId using optional chaining and provide a fallback
       const deviceId = this.bluetoothConnectedDevice?.device?.deviceId ?? 'defaultId';
       await BleClient.stopNotifications(deviceId, this.viatomServiceUUID, this.viatomCharacteristicUUID);
       return;
     }
 
     try {
-      // Check if the bluetoothConnectedDevice and device are defined
       if (!this.bluetoothConnectedDevice || !this.bluetoothConnectedDevice.device) {
         console.warn('Bluetooth device not connected');
         return;
       }
 
-      const deviceId = this.bluetoothConnectedDevice.device.deviceId; // Safe to access now
+      const deviceId = this.bluetoothConnectedDevice.device.deviceId;
       const stopScanAfterMilliSeconds = 10;
 
-      // Start notifications for the connected device
       await BleClient.startNotifications(
         deviceId,
         this.viatomServiceUUID,
@@ -356,15 +353,13 @@ export class ScannerComponent implements OnInit, OnDestroy {
         }
       );
 
-      // Set a timeout to stop notifications after a certain period
       setTimeout(async () => {
         if (this.started && this.foundData) {
           await BleClient.stopNotifications(deviceId, this.viatomServiceUUID, this.viatomCharacteristicUUID);
-          this.foundData = false; // Reset foundData flag
+          this.foundData = false;
         }
       }, stopScanAfterMilliSeconds);
 
-      // Recursive call to continue getting notifications if needed
       await this.getDeviceNotify();
     } catch (error) {
       console.error('Error while getting data', error);
@@ -378,10 +373,9 @@ export class ScannerComponent implements OnInit, OnDestroy {
     if (byteArray.length > 0) {
       for (let index = 0; index < byteArray.length; index++) {
         if (byteArray[index] === 0x08 && byteArray[index + 1] === 0x01 && byteArray[index + 5] !== undefined) {
-          // Use a simple assignment instead of nullish coalescing
-          this.measurementResult.spo2 = byteArray[index + 2] || null; // Use || to default to null
-          this.measurementResult.pulse = byteArray[index + 3] || null; // Use || to default to null
-          this.measurementResult.pi = (byteArray[index + 5] !== undefined ? byteArray[index + 5] / 10 : null); // Use ternary to handle division
+          this.measurementResult.spo2 = byteArray[index + 2] || null;
+          this.measurementResult.pulse = byteArray[index + 3] || null;
+          this.measurementResult.pi = (byteArray[index + 5] !== undefined ? byteArray[index + 5] / 10 : null);
 
           this.dps.push({
             spo2: this.measurementResult.spo2,
