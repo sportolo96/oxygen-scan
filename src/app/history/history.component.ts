@@ -1,30 +1,21 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { AngularFirestore } from "@angular/fire/compat/firestore";
+import { AngularFirestore } from '@angular/fire/compat/firestore';
 import * as XLSX from 'xlsx';
 import { Filesystem, Directory } from '@capacitor/filesystem';
 import { FileOpener } from '@capawesome-team/capacitor-file-opener';
-import { HeaderTitleService } from "../shared/services/headerTitle.service";
-import {TranslateService} from "@ngx-translate/core";
+import { FhirObservation } from '../shared/models/FhirObservation';
 
 @Component({
   selector: 'app-history',
   templateUrl: './history.component.html',
-  styleUrls: ['./history.component.scss']
+  styleUrls: ['./history.component.scss'],
 })
 export class HistoryComponent implements OnInit {
-
   data: any[] = [];
   loading: boolean = false;
-  displayedColumns: string[] = ['date', 'pulse', 'spo2', 'pi'];
+  displayedColumns: string[] = ['date', 'pi', 'spo2', 'pulse'];
 
-  constructor(
-    private firestore: AngularFirestore,
-    private headerTitleService: HeaderTitleService,
-    private translateService: TranslateService,
-  ) {
-    this.headerTitleService.changeTitle(this.translateService.instant('histories'));
-  }
+  constructor(private firestore: AngularFirestore) {}
 
   ngOnInit(): void {
     this.loadData();
@@ -33,21 +24,68 @@ export class HistoryComponent implements OnInit {
   private loadData(): void {
     const user = this.getUserFromLocalStorage();
 
-    if (user?.email) {
-      this.firestore.collection('Data', ref => ref
-        .where('email', '==', user.email)
-        .orderBy('date', 'desc')
-      ).valueChanges().subscribe(data => {
-        this.data = data;
-      });
+    if (user?.uid) {
+      this.firestore
+        .collection('Users')
+        .doc(user.uid)
+        .collection('Observations', (ref) =>
+          ref.orderBy('effectiveDateTime', 'desc')
+        )
+        .valueChanges()
+        .subscribe((data) => {
+          const groupedData = this.groupObservationsByDate(data as FhirObservation[]);
+          this.data = this.formatDataForDisplay(groupedData);
+        });
     } else {
-      console.warn('User email not found');
+      console.warn('User ID not found');
     }
   }
 
   private getUserFromLocalStorage(): any {
     const userString = localStorage.getItem('user');
     return userString ? JSON.parse(userString) : {};
+  }
+
+  private groupObservationsByDate(observations: FhirObservation[]): any[] {
+    const grouped: { [key: string]: any } = {};
+
+    observations.forEach((obs) => {
+      const date = obs.effectiveDateTime;
+      if (!grouped[date]) {
+        grouped[date] = { date };
+      }
+
+      if (obs.code.text === 'Pulse') {
+        grouped[date].pulse = obs.valueQuantity.value;
+      } else if (obs.code.text === 'SPO2') {
+        grouped[date].spo2 = obs.valueQuantity.value;
+      } else if (obs.code.text === 'PI') {
+        grouped[date].pi = obs.valueQuantity.value;
+      }
+    });
+
+    return Object.values(grouped);
+  }
+
+  private formatDataForDisplay(groupedData: any[]): any[] {
+    return groupedData.map((row) => ({
+      date: row.date,
+      pulse: row.pulse ?? 'N/A',
+      spo2: row.spo2 ?? 'N/A',
+      pi: row.pi ?? 'N/A',
+    }));
+  }
+
+  private formatDate(value: string): string {
+    const date = new Date(value);
+
+    const year = date.getFullYear();
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const day = date.getDate().toString().padStart(2, '0');
+    const hour = date.getHours().toString().padStart(2, '0');
+    const minute = date.getMinutes().toString().padStart(2, '0');
+
+    return `${year}-${month}-${day} ${hour}:${minute}`;
   }
 
   async export(): Promise<void> {
@@ -67,13 +105,19 @@ export class HistoryComponent implements OnInit {
   }
 
   private formatDataForExport(headers: string[]): any[] {
-    return this.data.map(row => {
+    return this.data.map((row) => {
       const formattedRow: any = {};
 
-      headers.forEach(header => {
+      headers.forEach((header) => {
         let value = row[header];
         if (header === 'date') {
-          value = this.formatDate(value);
+          value = this.formatDate(row.date);
+        } else if (header === 'pulse') {
+          value = row.pulse;
+        } else if (header === 'spo2') {
+          value = row.spo2;
+        } else if (header === 'pi') {
+          value = row.pi;
         }
         formattedRow[header] = value;
       });
@@ -82,19 +126,11 @@ export class HistoryComponent implements OnInit {
     });
   }
 
-  private formatDate(value: any): string {
-    const date = new Date(parseInt(value));
-    const year = date.getFullYear();
-    const month = (date.getMonth() + 1).toString().padStart(2, '0');
-    const day = date.getDate().toString().padStart(2, '0');
-    return `${year}-${month}-${day}`;
-  }
-
   private async saveFileToDevice(data: any, fileName: string): Promise<void> {
     await Filesystem.writeFile({
       data,
       path: fileName,
-      directory: Directory.Documents
+      directory: Directory.Documents,
     });
 
     const fileUri = (await Filesystem.getUri({
@@ -103,7 +139,7 @@ export class HistoryComponent implements OnInit {
     })).uri;
 
     await FileOpener.openFile({
-      path: fileUri
+      path: fileUri,
     });
   }
 }

@@ -1,6 +1,5 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {AlertController, IonicModule} from '@ionic/angular';
-import {DataService} from '../shared/services/data.service';
 import {
   Chart,
   LineController,
@@ -30,6 +29,9 @@ import {MatInputModule} from '@angular/material/input';
 import {HeaderTitleService} from "../shared/services/headerTitle.service";
 import {MeasurementResult} from "../shared/models/MeasurementResult";
 import {TranslatePipe, TranslateService} from "@ngx-translate/core";
+import {FhirObservation} from "../shared/models/FhirObservation";
+import {StorageService} from "../shared/services/storage.service";
+import {ObservationService} from "../shared/services/observation.service";
 
 Chart.register(LineController, LineElement, PointElement, LinearScale, Title, CategoryScale);
 
@@ -52,6 +54,7 @@ export class ScannerComponent implements OnInit, OnDestroy {
   bluetoothConnectedDevice?: ScanResult;
   services = [];
   pulseChart: Chart | null = null;
+  user: any;
 
   measurementResult: MeasurementResult = {
     spo2: null,
@@ -65,10 +68,11 @@ export class ScannerComponent implements OnInit, OnDestroy {
   readonly dialog = inject(MatDialog);
 
   constructor(
-    private dataService: DataService,
     private alertController: AlertController,
     private headerTitleService: HeaderTitleService,
     private translateService: TranslateService,
+    private storageService: StorageService,
+    private observationService: ObservationService
   ) {
     this.headerTitleService.changeTitle(this.translateService.instant('measurement'));
 
@@ -78,6 +82,7 @@ export class ScannerComponent implements OnInit, OnDestroy {
     }
 
     this.init().then(r => console.log('The module was loaded'));
+    this.user = JSON.parse(localStorage.getItem('user') || '{}');
   }
 
   openDialog(): void {
@@ -90,7 +95,7 @@ export class ScannerComponent implements OnInit, OnDestroy {
       console.log(result);
       if (result !== undefined) {
         this.averageMeasurementResult = (result);
-        this.addData();
+        this.addData().then(r => console.log("Measurement result is stored", r));
       }
     });
   }
@@ -136,8 +141,6 @@ export class ScannerComponent implements OnInit, OnDestroy {
   }
 
   async addData() {
-    const user = JSON.parse(localStorage.getItem('user') || '{}');
-
     if (this.averageMeasurementResult?.pulse >= 130 ||
       this.averageMeasurementResult?.spo2 <= 92 ||
       (this.averageMeasurementResult?.pi <= 0.2 || this.averageMeasurementResult?.pi >= 20)
@@ -148,33 +151,24 @@ export class ScannerComponent implements OnInit, OnDestroy {
       );
     }
 
-    const spo2 = this.averageMeasurementResult.spo2 ?? 0;
-    const pi = this.averageMeasurementResult.pi ?? 0;
-    const pulse = this.averageMeasurementResult.pulse ?? 0;
+    localStorage.setItem('averageMeasurementResult', JSON.stringify(this.averageMeasurementResult))
 
-    if (
-      spo2 === 0 ||
-      !user.email
-    ) {
+    if (!this.user.uid) {
+      console.log("We cannot sync data without registered user")
       return;
     }
 
-    const data = new Date().getTime();
+    const date = new Date();
 
     localStorage.setItem('averageMeasurementResult', JSON.stringify(this.averageMeasurementResult))
 
-    this.dataService.create({
-      id: Math.random().toString().substr(2, 8),
-      email: user.email,
-      spo2: spo2,
-      pi: pi,
-      pulse: pulse,
-      date: data
-    }).then(() => {
-      console.log(this.translateService.instant('success_data_save'), this.translateService.instant('success_data_save_long_text'));
-    }).catch(error => {
-      console.error(error);
-    });
+    let observations: FhirObservation[] = [];
+    observations.push(await this.saveMeasurement('spo2', date));
+    observations.push(await this.saveMeasurement('pulse', date));
+    observations.push(await this.saveMeasurement('pi', date));
+
+    await this.storageService.saveObservationData(this.user.uid, observations);
+
   }
 
   createChart(result: { labels: string[]; spo2Values: number[]; pulseValues: number[]; piValues: number[] }) {
@@ -455,6 +449,27 @@ export class ScannerComponent implements OnInit, OnDestroy {
     this.dps = [];
     this.bluetoothConnectedDevice = undefined;
     this.bluetoothScanResults = [];
+  }
+
+  async saveMeasurement(measurementType: string, date: Date) {
+    let observation: FhirObservation;
+
+    switch (measurementType) {
+      case 'spo2':
+        observation = this.observationService.createObservation(this.user.uid, date.toISOString(), 'spo2', '2708-6', 'SPO2', this.averageMeasurementResult.spo2, '%');
+        break;
+      case 'pulse':
+        observation = this.observationService.createObservation(this.user.uid, date.toISOString(), 'pulse', '8867-4', 'Pulse', this.averageMeasurementResult.pulse, 'bpm');
+        break;
+      case 'pi':
+        observation = this.observationService.createObservation(this.user.uid, date.toISOString(), 'pi', '9279-1', 'PI', this.averageMeasurementResult.pi, 'unit');
+        break;
+      default:
+        console.error('Ismeretlen mérés típusa');
+        return null;
+    }
+
+    return observation;
   }
 
   ngOnInit() {

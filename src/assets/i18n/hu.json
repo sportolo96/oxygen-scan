@@ -85,5 +85,6 @@
   "success_data_save_long_text": "Sikeres adatmentés a felhőbe, később visszanézheti az archív eredmények között.",
   "need_to_connect_device": "A méréshez csatlakoztatni kell egy oxigénszintmérő eszközt!",
   "the": "A(z)",
-  "cannot_reach_device_end": "oxigénszintmérőt nem lehet elérni."
+  "cannot_reach_device_end": "oxigénszintmérőt nem lehet elérni.",
+  "need_internet_connection": "Internet kapcsolat szükséges."
 }

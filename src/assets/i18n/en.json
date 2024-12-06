@@ -85,5 +85,6 @@
   "success_data_save_long_text": "Data has been successfully saved to the cloud, you can review the archived results later.",
   "need_to_connect_device": "You need to connect an oxygen level measuring device to take the measurement!",
   "the": "The",
-  "cannot_reach_device_end": "oxygen level meter cannot be reached."
+  "cannot_reach_device_end": "oxygen level meter cannot be reached.",
+  "need_internet_connection": "Need internet connection"
 }

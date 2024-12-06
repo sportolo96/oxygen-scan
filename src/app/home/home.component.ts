@@ -31,8 +31,8 @@ import {ImageService} from '../shared/services/image.service';
 import {UserService} from '../shared/services/user.service';
 import {Timer} from '../shared/models/Timer';
 import {MeasurementResult} from '../shared/models/MeasurementResult';
-import {DataService} from '../shared/services/data.service';
 import {TranslatePipe, TranslateService} from "@ngx-translate/core";
+import {NetworkStatusService} from "../shared/services/network-status.service";
 
 const DEFAULT_IMAGE = '../assets/img/default.png';
 
@@ -52,6 +52,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   imageSubscriptions: Subscription[] = [];
   timer: Timer;
   user: User;
+  isOnline: boolean = false;
 
   constructor(
     private authService: AuthService,
@@ -59,10 +60,14 @@ export class HomeComponent implements OnInit, OnDestroy {
     private headerTitleService: HeaderTitleService,
     private imageService: ImageService,
     private userService: UserService,
-    private dataService: DataService,
     private translateService: TranslateService,
+    private networkStatusService: NetworkStatusService,
   ) {
     this.headerTitleService.changeTitle(this.translateService.instant('profile'));
+    this.networkStatusService.isOnline.subscribe((status) => {
+      this.isOnline = status;
+      this.image = localStorage.getItem('profilePicture') &&  this.isOnline ? localStorage.getItem('profilePicture') : DEFAULT_IMAGE;
+    });
   }
 
   ngOnInit(): void {
@@ -70,12 +75,12 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.user = JSON.parse(localStorage.getItem('user') || '{}');
     this.averageMeasurementResult = JSON.parse(localStorage.getItem('averageMeasurementResult') || '{}');
     this.bluetoothConnectedDevice = JSON.parse(localStorage.getItem('bluetoothConnectedDevice') || '{}');
-    this.image = localStorage.getItem('profilePicture') ?? DEFAULT_IMAGE;
+    this.image = DEFAULT_IMAGE;
 
     if (this.user?.uid) {
       this.loading = true;
       this.userSubscription = this.userService
-        .getById( this.user.uid)
+        .getById(this.user.uid)
         .subscribe((user) => {
           const imageName = user?.hasProfilePicture ? user.uid : 'default';
           this.fetchImage(`${imageName}.png`, false);
@@ -194,6 +199,11 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   openDeleteProfileApproveDialog(): void {
+    if (!this.isOnline) {
+      this.presentAlert('', this.translateService.instant('need_internet_connection'));
+      return;
+    }
+
     const deleteDialogRef = this.dialog.open(AppDeleteApprovedModalPage);
 
     deleteDialogRef.afterClosed().subscribe(async result => {
@@ -212,20 +222,18 @@ export class HomeComponent implements OnInit, OnDestroy {
           this.imageService.deleteImage(`profile/${this.user.uid}.png`);
         }
 
-        this.dataService.deleteById(this.user.uid).then(() => {
-          this.userService.delete(this.user.uid).then(() => {
-            this.authService.delete().then(() => {
-              localStorage.removeItem('user');
-              localStorage.removeItem('averageMeasurementResult');
-              localStorage.removeItem('profilePicture');
-              this.user = null;
-              this.image = DEFAULT_IMAGE;
-              location.reload();
-              this.presentAlert(this.translateService.instant('success_profile_delete'), '');
-              return;
-            });
+        this.userService.delete(this.user.uid).then(() => {
+          this.authService.delete().then(() => {
+            localStorage.removeItem('user');
+            localStorage.removeItem('averageMeasurementResult');
+            localStorage.removeItem('profilePicture');
+            this.user = null;
+            this.image = DEFAULT_IMAGE;
+            location.reload();
+            this.presentAlert(this.translateService.instant('success_profile_delete'), '');
+            return;
           });
-        })
+        });
 
         this.loading = false;
         return;
@@ -262,6 +270,11 @@ export class HomeComponent implements OnInit, OnDestroy {
 
     if (!target.files || !target.files[0].type.includes('image/')) {
       this.presentAlert('', this.translateService.instant('error_during_image_upload'));
+      return;
+    }
+
+    if (!this.isOnline) {
+      this.presentAlert('', this.translateService.instant('need_internet_connection'));
       return;
     }
 

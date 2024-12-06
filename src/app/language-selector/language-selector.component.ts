@@ -20,7 +20,10 @@ export class LanguageSelectorComponent{
   }
 
   getCurrentLang(): void {
-    this.currentLang = localStorage.getItem('lang' || 'hu');
+    this.currentLang= localStorage.getItem('lang');
+    if (!this.currentLang) {
+      this.switchLanguage('hu')
+    }
   }
 
   switchLanguage(lang: string) {

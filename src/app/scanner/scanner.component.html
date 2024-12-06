@@ -92,7 +92,7 @@
             }"
         >{{ 'pi_short'|translate }}: {{ measurementResult?.pi ?? "" }}</p>
       </div>
-      <mat-icon class="info-icon" (click)="openInfoDialog()">i</mat-icon>
+      <mat-icon class="info-icon" (click)="openInfoDialog()">info</mat-icon>
     </div>
     <canvas id="pulseChart"></canvas>
     <div *ngIf="averageMeasurementResult?.spo2">
