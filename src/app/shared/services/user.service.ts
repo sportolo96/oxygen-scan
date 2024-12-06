@@ -37,22 +37,30 @@ export class UserService {
 
   async delete(userId: string): Promise<void> {
     try {
-      const userDocRef = this.afs.collection('Users').doc(userId);
+      const subCollections = ['Observations'];
 
-      const observationsRef = userDocRef.collection('Observations');
+      for (const subCollection of subCollections) {
+        await this.deleteSubCollection(userId, subCollection);
+      }
 
-      observationsRef.get().pipe(
-        map(snapshot => {
-          const deletePromises = snapshot.docs.map(doc => doc.ref.delete());
-          return Promise.all(deletePromises);
-        })
-      ).subscribe(async () => {
-        await userDocRef.delete();
-        console.log(`User ${userId} and all data are deleted.`);
-      });
+      await this.afs.collection('Users').doc(userId).delete();
+      console.log(`User ${userId} deleted.`);
+    } catch (error) {
+      console.error(`Error during user delete process: ${error.message}`);
+    }
+  }
+
+  async deleteSubCollection(userId: string, subcollectionName: string): Promise<void> {
+    try {
+      const subCollectionRef = this.afs.collection(`Users/${userId}/${subcollectionName}`);
+      const snapshot = await subCollectionRef.get().toPromise();
+
+      const deletePromises = snapshot?.docs.map(doc => doc.ref.delete()) || [];
+      await Promise.all(deletePromises);
+
+      console.log(`SubCollection ${subcollectionName} deleted.`);
     } catch (error) {
       console.error(`Error during delete process: ${error.message}`);
     }
   }
-
 }

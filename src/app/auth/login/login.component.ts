@@ -98,6 +98,7 @@ export class LoginComponent implements OnInit {
     if (userCredential?.user) {
       localStorage.setItem('user', JSON.stringify(userCredential.user));
       this.router.navigateByUrl('/home');
+      location.reload()
     }
   }
 
