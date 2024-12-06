@@ -213,7 +213,7 @@ export class HomeComponent implements OnInit, OnDestroy {
         const correct = await this.authService.checkPassword(result);
 
         if (!correct) {
-          await this.presentAlert(this.translateService.instant('error_while_deleting'), this.translateService.instant('incorrect_password'));
+          await this.presentAlert(this.translateService.instant('incorrect_password'), this.translateService.instant('error_while_deleting'));
           this.loading = false;
           return;
         }
@@ -229,8 +229,8 @@ export class HomeComponent implements OnInit, OnDestroy {
             localStorage.removeItem('profilePicture');
             this.user = null;
             this.image = DEFAULT_IMAGE;
-            location.reload();
             this.presentAlert(this.translateService.instant('success_profile_delete'), '');
+            location.reload();
             return;
           });
         });
