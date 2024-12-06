@@ -3,6 +3,7 @@
     <ion-toolbar class="ion-text-center">
       <div class="flex justify-around pt-8">
         <h4 class="header-title">{{ headerTitle }}</h4>
+        <app-language-selector></app-language-selector>
       </div>
     </ion-toolbar>
   </ion-header>
@@ -21,7 +22,7 @@
           [routerLinkActiveOptions]="{ exact: true }">
 
           <mat-icon>{{ p.icon }}</mat-icon>
-          <span>{{ p.title }}</span>
+          <span>{{  p.title|translate }}</span>
         </button>
 
       </div>

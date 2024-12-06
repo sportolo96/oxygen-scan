@@ -11,6 +11,7 @@ import {RouterLink} from "@angular/router";
 import {AuthRoutingModule} from "./auth-routing.module";
 import {MatCheckbox} from "@angular/material/checkbox";
 import {ResetPasswordComponent} from "./reset-password/reset-password.component";
+import {TranslatePipe} from "@ngx-translate/core";
 
 @NgModule({
   declarations: [
@@ -28,6 +29,7 @@ import {ResetPasswordComponent} from "./reset-password/reset-password.component"
         RouterLink,
         AuthRoutingModule,
         MatCheckbox,
+        TranslatePipe,
     ]
 })
 export class AuthModule {}

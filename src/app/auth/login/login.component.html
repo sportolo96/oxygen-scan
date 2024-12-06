@@ -13,27 +13,27 @@
 
       <!-- Email Field -->
       <mat-form-field>
-        <mat-label for="email">E-mail:</mat-label>
+        <mat-label for="email"> {{ 'email'|translate }}:</mat-label>
         <input matInput type="email" formControlName="email" id="email" required />
         <mat-error *ngIf="signInForm.controls['email'].hasError('required')">
-          E-mail megadása kötelező.
+          {{ 'email_required'|translate }}
         </mat-error>
         <mat-error *ngIf="signInForm.controls['email'].hasError('email')">
-          Érvénytelen e-mail cím.
+          {{ 'email_not_valid'|translate }}
         </mat-error>
       </mat-form-field>
 
       <!-- Password Field -->
       <mat-form-field>
-        <mat-label for="password">Jelszó:</mat-label>
+        <mat-label for="password">{{ 'password'|translate }}:</mat-label>
         <input matInput type="password" formControlName="password" id="password" required />
         <mat-error *ngIf="signInForm.controls['password'].hasError('required')">
-          Jelszó megadása kötelező.
+          {{ 'password_required'|translate }}
         </mat-error>
       </mat-form-field>
 
       <!-- Remember Me Checkbox -->
-      <mat-checkbox formControlName="rememberMe">Emlékezz rám!</mat-checkbox>
+      <mat-checkbox formControlName="rememberMe">{{ 'remember_me'|translate }}</mat-checkbox>
 
       <!-- Error Message -->
       <div class="h-8 w-full text-center pb-5">
@@ -44,11 +44,11 @@
     <!-- Buttons -->
     <div class="flex gap-4 flex-col">
       <button class="cube-white-button collored-button" type="submit" [disabled]="loading">
-        Belépés
+        {{ 'login'|translate }}
       </button>
       <hr class="devider">
       <button class="cube-white-button" [routerLink]="'/auth/register'">
-        Regisztráció
+        {{ 'registration'|translate }}
       </button>
     </div>
   </form>

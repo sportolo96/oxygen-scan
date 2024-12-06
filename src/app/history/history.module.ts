@@ -6,6 +6,8 @@ import { HistoryComponent } from './history.component';
 import {MatButtonModule} from '@angular/material/button';
 import {MatTableModule} from '@angular/material/table';
 import {MatProgressSpinner} from "@angular/material/progress-spinner";
+import {MatCheckbox} from "@angular/material/checkbox";
+import {TranslatePipe} from "@ngx-translate/core";
 
 
 @NgModule({
@@ -17,7 +19,9 @@ import {MatProgressSpinner} from "@angular/material/progress-spinner";
         HistoryRoutingModule,
         MatButtonModule,
         MatTableModule,
-        MatProgressSpinner
+        MatProgressSpinner,
+        MatCheckbox,
+        TranslatePipe
     ]
 })
 export class HistoryModule { }

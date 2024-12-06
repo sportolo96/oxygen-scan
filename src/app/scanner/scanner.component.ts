@@ -1,5 +1,4 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {Router} from '@angular/router';
 import {AlertController, IonicModule} from '@ionic/angular';
 import {DataService} from '../shared/services/data.service';
 import {
@@ -30,6 +29,7 @@ import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
 import {HeaderTitleService} from "../shared/services/headerTitle.service";
 import {MeasurementResult} from "../shared/models/MeasurementResult";
+import {TranslatePipe, TranslateService} from "@ngx-translate/core";
 
 Chart.register(LineController, LineElement, PointElement, LinearScale, Title, CategoryScale);
 
@@ -64,6 +64,22 @@ export class ScannerComponent implements OnInit, OnDestroy {
 
   readonly dialog = inject(MatDialog);
 
+  constructor(
+    private dataService: DataService,
+    private alertController: AlertController,
+    private headerTitleService: HeaderTitleService,
+    private translateService: TranslateService,
+  ) {
+    this.headerTitleService.changeTitle(this.translateService.instant('measurement'));
+
+    this.bluetoothConnectedDevice = JSON.parse(localStorage.getItem('bluetoothConnectedDevice') || '{}');
+    if (!this.bluetoothConnectedDevice.device) {
+      this.bluetoothConnectedDevice = undefined;
+    }
+
+    this.init().then(r => console.log('The module was loaded'));
+  }
+
   openDialog(): void {
     const dialogRef = this.dialog.open(AppManualModalPage, {
       data: {measurementResult: this.measurementResult.spo2},
@@ -85,22 +101,6 @@ export class ScannerComponent implements OnInit, OnDestroy {
       maxWidth: '100vw',
       height: 'auto'
     });
-  }
-
-  constructor(
-    private router: Router,
-    private dataService: DataService,
-    private alertController: AlertController,
-    private headerTitleService: HeaderTitleService
-  ) {
-    this.headerTitleService.changeTitle('Mérés');
-
-    this.bluetoothConnectedDevice = JSON.parse(localStorage.getItem('bluetoothConnectedDevice') || '{}');
-    if (!this.bluetoothConnectedDevice.device) {
-      this.bluetoothConnectedDevice = undefined;
-    }
-
-    this.init().then(r => console.log('The module was loaded'));
   }
 
   async init() {
@@ -143,8 +143,8 @@ export class ScannerComponent implements OnInit, OnDestroy {
       (this.averageMeasurementResult?.pi <= 0.2 || this.averageMeasurementResult?.pi >= 20)
     ) {
       await this.presentAlert(
-        'Kritikus értékek!',
-        'Mielőbb végezzen új mérést. Amennyiben a továbbiakban is fenn állnak a mért értékek, kérjen mielőbbi segítséget!',
+        this.translateService.instant('critical_values_title'),
+        this.translateService.instant('critical_values_long_text'),
       );
     }
 
@@ -171,7 +171,7 @@ export class ScannerComponent implements OnInit, OnDestroy {
       pulse: pulse,
       date: data
     }).then(() => {
-      console.log('Sikeres adatmentés!', 'Sikeres adatmentés a felhőbe, később visszanézheti az archív eredmények között.');
+      console.log(this.translateService.instant('success_data_save'), this.translateService.instant('success_data_save_long_text'));
     }).catch(error => {
       console.error(error);
     });
@@ -187,19 +187,19 @@ export class ScannerComponent implements OnInit, OnDestroy {
           labels: result.labels,
           datasets: [
             {
-              label: 'SpO2',
+              label: this.translateService.instant('spo2_short'),
               data: result.spo2Values,
               borderColor: '#FF5733',
               borderWidth: 1,
             },
             {
-              label: 'Pulse',
+              label: this.translateService.instant('pulse.short'),
               data: result.pulseValues,
               borderColor: '#33C1FF',
               borderWidth: 1,
             },
             {
-              label: 'PI',
+              label: this.translateService.instant('pi_short'),
               data: result.piValues,
               borderColor: '#82E0AA',
               borderWidth: 1,
@@ -300,7 +300,7 @@ export class ScannerComponent implements OnInit, OnDestroy {
     if (!this.bluetoothConnectedDevice?.device.deviceId) {
       await this.presentAlert(
         '',
-        'A méréshez csatlakoztatni kell egy oxigénszintmérő eszközt!',
+        this.translateService.instant('need_to_connect_device'),
       );
       this.endScan = true;
       this.started = false;
@@ -310,8 +310,8 @@ export class ScannerComponent implements OnInit, OnDestroy {
     if (!await this.connectToBluetoothDevice(this.bluetoothConnectedDevice)) {
       await this.presentAlert(
         '',
-        `A(z) (${this.bluetoothConnectedDevice?.device?.name ??
-        this.bluetoothConnectedDevice?.device?.deviceId}) oxigénszintmérőt nem lehet elérni.`,
+        `${this.translateService.instant('the')} (${this.bluetoothConnectedDevice?.device?.name ??
+        this.bluetoothConnectedDevice?.device?.deviceId}) ${this.translateService.instant('cannot_reach_device_end')}`,
       );
       this.endScan = true;
       this.started = false;
@@ -399,7 +399,7 @@ export class ScannerComponent implements OnInit, OnDestroy {
   }
 
   onBluetoothDeviceFound(result: ScanResult) {
-    console.log('received new scan result', result);
+    console.log('Received new scan result', result);
     this.bluetoothScanResults.push(result);
   }
 
@@ -423,12 +423,12 @@ export class ScannerComponent implements OnInit, OnDestroy {
       this.bluetoothConnectedDevice = scanResult;
       localStorage.setItem('bluetoothConnectedDevice', JSON.stringify(scanResult))
 
-      console.log('Sikeresen párosítás!', `Sikeresen párosította az (${device.name ?? device.deviceId}) oxigénszintmérőt.`);
+      console.log('Success pairing!', `Successfully paired (${device.name ?? device.deviceId}) sensor.`);
 
       return true;
 
     } catch (error) {
-      console.error('connectToDevice', error);
+      console.error('ConnectToDevice', error);
       return false;
     }
   }
@@ -450,7 +450,7 @@ export class ScannerComponent implements OnInit, OnDestroy {
   }
 
   onBluetoothDeviceDisconnected(disconnectedDeviceId: string) {
-    console.log(`A párosított (${disconnectedDeviceId}) oxigénszintmérő lecsatlakoztatva!`);
+    console.log(`The paired (${disconnectedDeviceId}) sensor is disconnected!`);
     this.measurementResult = {spo2: null, pulse: null, pi: null};
     this.dps = [];
     this.bluetoothConnectedDevice = undefined;
@@ -480,14 +480,14 @@ export class ScannerComponent implements OnInit, OnDestroy {
       return Boolean(connectedDevices.length);
 
     } catch (error) {
-      console.error('Hiba történt a csatlakozási állapot ellenőrzése során:', error);
+      console.error('Cannot check connection:', error);
       return false;
     }
   }
 
   async presentAlert(text: string, subtext: string) {
     const alert = await this.alertController.create({
-      subHeader: text,
+      header: text,
       message: subtext,
       buttons: ['OK']
     });
@@ -509,6 +509,7 @@ export class ScannerComponent implements OnInit, OnDestroy {
     MatDialogContent,
     MatDialogActions,
     MatDialogClose,
+    TranslatePipe,
   ],
 })
 export class AppManualModalPage {
@@ -543,6 +544,7 @@ export class AppManualModalPage {
     MatDialogActions,
     MatDialogClose,
     IonicModule,
+    TranslatePipe,
   ],
 })
 export class AppInfoModalPage {

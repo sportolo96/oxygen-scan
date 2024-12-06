@@ -7,6 +7,7 @@ import {HeaderTitleService} from "./shared/services/headerTitle.service";
 import {Capacitor} from "@capacitor/core";
 import {StatusBar, Style} from "@capacitor/status-bar";
 import firebase from "firebase/compat/app";
+import {TranslateService} from "@ngx-translate/core";
 
 export interface Timer {
   time: string;
@@ -26,16 +27,19 @@ export class AppComponent implements AfterViewInit, OnInit {
   routes: Array<string> = [];
   loggedInUser?: firebase.User | null;
   appPages = [
-    {title: 'Előzmények', url: 'history', icon: 'dns', authRoute: true},
-    {title: 'Mérés', url: 'scanner', icon: 'camera', authRoute: null},
-    {title: 'Profil', url: 'home', icon: 'supervised_user_circle', authRoute: null},
+    {title: 'histories', url: 'history', icon: 'dns', authRoute: true},
+    {title: 'measurement', url: 'scanner', icon: 'camera', authRoute: null},
+    {title: 'profile', url: 'home', icon: 'supervised_user_circle', authRoute: null},
   ];
 
   constructor(
     private authService: AuthService,
     private router: Router,
+    private translateService: TranslateService,
     private headerTitleService: HeaderTitleService
   ) {
+    this.translateService.setDefaultLang('en')
+    this.translateService.use(localStorage.getItem('lang' || 'en'))
     this.initializePushNotifications();
     this.initializeLocalNotificationListeners();
     if (Capacitor.isPluginAvailable('StatusBar')) {

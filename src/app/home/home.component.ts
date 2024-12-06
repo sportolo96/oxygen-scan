@@ -32,6 +32,7 @@ import {UserService} from '../shared/services/user.service';
 import {Timer} from '../shared/models/Timer';
 import {MeasurementResult} from '../shared/models/MeasurementResult';
 import {DataService} from '../shared/services/data.service';
+import {TranslatePipe, TranslateService} from "@ngx-translate/core";
 
 const DEFAULT_IMAGE = '../assets/img/default.png';
 
@@ -58,9 +59,10 @@ export class HomeComponent implements OnInit, OnDestroy {
     private headerTitleService: HeaderTitleService,
     private imageService: ImageService,
     private userService: UserService,
-    private dataService: DataService
+    private dataService: DataService,
+    private translateService: TranslateService,
   ) {
-    this.headerTitleService.changeTitle('Profil');
+    this.headerTitleService.changeTitle(this.translateService.instant('profile'));
   }
 
   ngOnInit(): void {
@@ -92,8 +94,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   async presentAlert(text: string, subtext: string) {
     const alert = await this.alertController.create({
-      header: 'Figyelem!',
-      subHeader: text,
+      header: text,
       message: subtext,
       buttons: ['OK']
     });
@@ -103,7 +104,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   logout() {
     this.authService.logout();
-    this.presentAlert('', 'Sikeresen kijelentkezett fiókjából');
+    this.presentAlert('', this.translateService.instant('successfully_logged_out'));
     this.user = null;
     this.image = DEFAULT_IMAGE;
     location.reload();
@@ -145,8 +146,8 @@ export class HomeComponent implements OnInit, OnDestroy {
       await LocalNotifications.schedule({
         notifications: [
           {
-            title: 'Mérésemlékeztető',
-            body: 'Ideje elvégezni a napi oxigénszint mérését',
+            title: this.translateService.instant('measurement_notification'),
+            body: this.translateService.instant('measurement_notification_text'),
             id: timer.notificationId,
             schedule: {
               repeats: true,
@@ -202,7 +203,7 @@ export class HomeComponent implements OnInit, OnDestroy {
         const correct = await this.authService.checkPassword(result);
 
         if (!correct) {
-          this.presentAlert('Hiba történt a törlés során!', 'Nem megfelelő jelszó.');
+          await this.presentAlert(this.translateService.instant('error_while_deleting'), this.translateService.instant('incorrect_password'));
           this.loading = false;
           return;
         }
@@ -220,7 +221,7 @@ export class HomeComponent implements OnInit, OnDestroy {
               this.user = null;
               this.image = DEFAULT_IMAGE;
               location.reload();
-              this.presentAlert('Sikeresen törölte profilját!', '');
+              this.presentAlert(this.translateService.instant('success_profile_delete'), '');
               return;
             });
           });
@@ -260,7 +261,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     const target = event.target as HTMLInputElement;
 
     if (!target.files || !target.files[0].type.includes('image/')) {
-      this.presentAlert('', `Sikertelen fájlfeltöltés!`);
+      this.presentAlert('', this.translateService.instant('error_during_image_upload'));
       return;
     }
 
@@ -288,7 +289,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
           if (this.user && !this.user.hasProfilePicture) {
             this.user.hasProfilePicture = true;
-            this.userService.update(this.user).then(() => console.log('Sikeres képfeltöltés'));
+            this.userService.update(this.user).then(() => console.log('Successfully updated profile'));
           }
         });
     });
@@ -314,7 +315,8 @@ export class HomeComponent implements OnInit, OnDestroy {
     MatDatepickerInput,
     NgxMatTimepickerComponent,
     NgxMatTimepickerDirective,
-    MatIcon
+    MatIcon,
+    TranslatePipe
   ],
 })
 
@@ -355,7 +357,8 @@ export class AppSetTimerModalPage {
     NgxMatTimepickerComponent,
     NgxMatTimepickerDirective,
     MatIcon,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    TranslatePipe
   ],
 })
 
@@ -400,7 +403,8 @@ export class AppDeleteApprovedModalPage {
     NgxMatTimepickerComponent,
     NgxMatTimepickerDirective,
     MatIcon,
-    ImageCropperComponent
+    ImageCropperComponent,
+    TranslatePipe
   ],
 })
 

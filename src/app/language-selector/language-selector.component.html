@@ -1,0 +1,9 @@
+<div class="language-selector">
+  <span
+    *ngFor="let lang of languages"
+    class="language-badge"
+    [class.active]="currentLang === lang.code"
+    (click)="switchLanguage(lang.code)">
+    {{ lang.label }}
+  </span>
+</div>

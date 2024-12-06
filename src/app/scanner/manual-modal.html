@@ -1,20 +1,20 @@
-<h2 mat-dialog-title>Manuális rögzítés</h2>
+<h2 mat-dialog-title>{{ 'manual_input'|translate }}</h2>
 <mat-dialog-content>
   <div class="flex flex-col gap-4"><mat-form-field>
-    <mat-label>Véroxigén szint</mat-label>
+    <mat-label>{{ 'spo2'|translate }}</mat-label>
     <input type="number" matInput [(ngModel)]="measurement.spo2" />
   </mat-form-field>
   <mat-form-field>
-    <mat-label>Pulzus</mat-label>
+    <mat-label>{{ 'pulse'|translate }}</mat-label>
     <input type="number" matInput [(ngModel)]="measurement.pulse" />
   </mat-form-field>
   <mat-form-field>
-    <mat-label>Pi</mat-label>
+    <mat-label>{{ 'pi'|translate }}</mat-label>
     <input type="number" matInput [(ngModel)]="measurement.pi" />
   </mat-form-field>
   </div>
 </mat-dialog-content>
 <mat-dialog-actions>
-  <button mat-button (click)="onClose()">Mégse</button>
-  <button mat-button  (click)="onSubmit()">Rögzítés</button>
+  <button mat-button (click)="onClose()">{{ 'cancel'|translate }}</button>
+  <button mat-button  (click)="onSubmit()">{{ 'save'|translate }}</button>
 </mat-dialog-actions>

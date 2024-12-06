@@ -1,4 +1,4 @@
-<h2 mat-dialog-title>Kép méretezés</h2>
+<h2 mat-dialog-title>{{ 'crop_image'|translate }}</h2>
 <mat-dialog-content>
   <image-cropper
     [imageChangedEvent]="data"
@@ -11,8 +11,8 @@
 </mat-dialog-content>
 <mat-dialog-actions>
   <button mat-stroked-button color="accent" (click)="onClose()" type="button">
-    Mégsem
+    {{ 'cancel'|translate }}
   </button>
   <button mat-flat-button color="accent" (click)="saveCroppedImage()">
-    Mentés
+    {{ 'upload'|translate }}
   </button></mat-dialog-actions>

@@ -10,38 +10,38 @@
       <ion-img class="profile-img" [src]="image" alt="Profilkép" />
       <div class="my-auto flex flex-col gap-1" *ngIf="user">
         <h1 class="normal-text">{{ user.email }}</h1>
-        <p class="small-text cursor-pointer" (click)="logout()">Kijelentkezés</p>
+        <p class="small-text cursor-pointer" (click)="logout()">{{ 'logout'|translate }}</p>
       </div>
 
       <div class="my-auto flex flex-col gap-1" *ngIf="!user">
-        <h1 class="normal-text">Vendégfiók</h1>
+        <h1 class="normal-text">{{ 'guest_account'|translate }}</h1>
         <div class="flex gap-4">
-          <p class="small-text cursor-pointer" [routerLink]="'/auth/login'">Bejelentkezés</p>
-          <p class="small-text cursor-pointer" [routerLink]="'/auth/register'">Regisztráció</p>
+          <p class="small-text cursor-pointer" [routerLink]="'/auth/login'">{{ 'login'|translate }}</p>
+          <p class="small-text cursor-pointer" [routerLink]="'/auth/register'">{{ 'registration'|translate }}</p>
         </div>
       </div>
     </div>
   </form>
 
   <form class="form-panel">
-    <p class="normal-text">Eszköz</p>
+    <p class="normal-text">{{ 'devices'|translate }}</p>
     <div *ngIf="bluetoothConnectedDevice.device" class="flex gap-4 justify-around">
       <div class="flex flex-row gap-3">
         <ion-img class="device-image m-auto" src="../assets/img/viatom.png"></ion-img>
-        <p class="small-text">{{ bluetoothConnectedDevice.device?.name ?? "NO name" }}</p>
+        <p class="small-text">{{ bluetoothConnectedDevice.device?.name ?? "-" }}</p>
       </div>
       <button class="cube-white-button small-button"
-              (click)="disconnectFromBluetoothDevice(bluetoothConnectedDevice)">Lecsatlakoztat
+              (click)="disconnectFromBluetoothDevice(bluetoothConnectedDevice)">{{ 'devices'|translate }}
       </button>
     </div>
 
     <div class="my-auto flex flex-col gap-1" *ngIf="!bluetoothConnectedDevice.device">
-      <h1 class="normal-text">Nem található párosított eszköz</h1>
+      <h1 class="normal-text">{{ 'not_device_found'|translate }}</h1>
     </div>
   </form>
 
   <form class="form-panel">
-    <p class="normal-text">Legutolsó mérés</p>
+    <p class="normal-text">{{ 'last_result'|translate }}</p>
     <div class="flex justify-around" *ngIf="averageMeasurementResult?.pulse">
       <p class="small-text"
          [ngClass]="{
@@ -50,7 +50,7 @@
               'orange-text': averageMeasurementResult?.pulse >= 110 && averageMeasurementResult?.pulse <= 130,
               'red-text': averageMeasurementResult?.pulse >= 130
             }"
-      >Pulzus: {{ averageMeasurementResult?.pulse ?? "no pulse data" }}</p>
+      >{{ 'pulse_short'|translate }}: {{ averageMeasurementResult?.pulse ?? "no pulse data" }}</p>
       <p class="small-text"
          [ngClass]="{
               'white-text': averageMeasurementResult?.spo2 > 95,
@@ -58,38 +58,38 @@
               'orange-text': averageMeasurementResult?.spo2 >= 93 && averageMeasurementResult?.spo2 <= 94,
               'red-text': averageMeasurementResult?.spo2 <= 92
             }"
-      >SPO2: {{ averageMeasurementResult?.spo2 ?? "no spo2 data" }}</p>
+      >{{ 'spo2_short'|translate }}: {{ averageMeasurementResult?.spo2 ?? "no spo2 data" }}</p>
       <p class="small-text"
          [ngClass]="{
               'white-text': averageMeasurementResult?.pi >= 0.2 && averageMeasurementResult?.pi <= 20,
               'red-text': averageMeasurementResult?.pi <= 0.2 || averageMeasurementResult?.pi >= 20
             }"
-      >PI: {{ averageMeasurementResult?.pi ?? "no pi data" }}</p>
+      >{{ 'pi_short'|translate }}: {{ averageMeasurementResult?.pi ?? "no pi data" }}</p>
     </div>
 
     <div class="my-auto flex flex-col gap-1" *ngIf="!averageMeasurementResult?.pulse">
-      <h1 class="normal-text">Nem található méréseredmény</h1>
+      <h1 class="normal-text">{{ 'not_result_found'|translate }}</h1>
       <div class="flex gap-4">
-        <span class="cursor-pointer text-right solid-button mr-0 ml-auto" [routerLink]="'/scanner'">Új mérés</span>
+        <span class="cursor-pointer text-right solid-button mr-0 ml-auto" [routerLink]="'/scanner'">{{ 'new_measurement'|translate }}</span>
       </div>
     </div>
   </form>
 
   <form class="form-panel">
-    <p class="normal-text">Időzített mérés</p>
+    <p class="normal-text">{{ 'timed_measurement'|translate }}</p>
     <div class="my-auto flex-col justify-around gap-1">
-      <p *ngIf="timer.notificationId" class="small-text w-full">Minden nap: {{ timer.time }}</p>
-      <h1 *ngIf="!timer.notificationId" class="normal-text w-full">Nincs időzítő beállítva</h1>
+      <p *ngIf="timer.notificationId" class="small-text w-full">{{ 'every_day'|translate }}: {{ timer.time }}</p>
+      <h1 *ngIf="!timer.notificationId" class="normal-text w-full">{{ 'no_alert_set'|translate }}</h1>
       <div class="my-auto flex justify-end gap-2">
-        <span class="cursor-pointer text-right solid-button" (click)="openDialog()">Új időzítő</span>
-        <span *ngIf="timer.notificationId" class="cursor-pointer text-right solid-button" (click)="removeTimer()">Töröl</span>
+        <span class="cursor-pointer text-right solid-button" (click)="openDialog()">{{ 'new_alert'|translate }}</span>
+        <span *ngIf="timer.notificationId" class="cursor-pointer text-right solid-button" (click)="removeTimer()">{{ 'remove'|translate }}</span>
       </div>
     </div>
   </form>
 
   <form class="form-panel flex-row gap-2" *ngIf="user">
     <div>
-      <p class="small-text cursor-pointer" (click)="fileUpload.click()">Profilkép módosítása</p>
+      <p class="small-text cursor-pointer" (click)="fileUpload.click()">{{ 'upload_profile_photo'|translate }}</p>
       <input
         #fileUpload
         type="file"
@@ -99,8 +99,8 @@
         (change)="changePicture($event)"
       />
     </div>
-    <p class="small-text cursor-pointer" (click)="openDeleteProfileApproveDialog()">Profil törlése</p>
-    <p class="small-text cursor-pointer" [routerLink]="'/auth/reset-password'">Jelszó módosítása</p>
+    <p class="small-text cursor-pointer" (click)="openDeleteProfileApproveDialog()">{{ 'remove_profile'|translate }}</p>
+    <p class="small-text cursor-pointer" [routerLink]="'/auth/reset-password'">{{ 'update_password'|translate }}</p>
   </form>
 </div>
 

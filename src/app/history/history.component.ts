@@ -5,6 +5,7 @@ import * as XLSX from 'xlsx';
 import { Filesystem, Directory } from '@capacitor/filesystem';
 import { FileOpener } from '@capawesome-team/capacitor-file-opener';
 import { HeaderTitleService } from "../shared/services/headerTitle.service";
+import {TranslateService} from "@ngx-translate/core";
 
 @Component({
   selector: 'app-history',
@@ -19,9 +20,10 @@ export class HistoryComponent implements OnInit {
 
   constructor(
     private firestore: AngularFirestore,
-    private headerTitleService: HeaderTitleService
+    private headerTitleService: HeaderTitleService,
+    private translateService: TranslateService,
   ) {
-    this.headerTitleService.changeTitle('Előzmények');
+    this.headerTitleService.changeTitle(this.translateService.instant('histories'));
   }
 
   ngOnInit(): void {

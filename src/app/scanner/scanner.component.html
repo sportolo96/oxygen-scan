@@ -9,26 +9,28 @@
 
     <div class="flex tab-container">
       <div class="w-full p-1 tab-item-1">
-        <p>Automatikus</p>
+        <p>{{ 'automatically'|translate }}</p>
       </div>
       <div class="w-full p-1 tab-item-2">
-        <p (click)="openDialog()">Manuális</p>
+        <p (click)="openDialog()">{{ 'manually'|translate }}</p>
       </div>
     </div>
 
     <div *ngIf="bluetoothConnectedDevice" class="py-5 flex gap-4 justify-around">
       <div class="flex flex-row gap-3">
         <ion-img class="device-image m-auto" src="../assets/img/viatom.png"></ion-img>
-        <p class="small-text">{{ bluetoothConnectedDevice.device?.name ?? "NO name" }}</p>
+        <p class="small-text">{{ bluetoothConnectedDevice.device?.name ?? "-" }}</p>
       </div>
       <button class="cube-white-button small-button"
-              (click)="disconnectFromBluetoothDevice(bluetoothConnectedDevice)">Lecsatlakoztat
+              (click)="disconnectFromBluetoothDevice(bluetoothConnectedDevice)">
+        {{ 'disconnect'|translate }}
       </button>
     </div>
 
     <div class="device-container py-5 flex gap-4 justify-around flex-col" *ngIf="!bluetoothConnectedDevice">
       <button *ngIf="!bluetoothScanResults.length" [disabled]="bluetoothIsScanning"
-              class="cube-white-button collored-button" (click)="scanForBluetoothDevices()">Új eszköz
+              class="cube-white-button collored-button" (click)="scanForBluetoothDevices()">
+        {{ 'new_device'|translate }}
       </button>
 
       <div *ngFor="let scanResult of bluetoothScanResults">
@@ -38,7 +40,8 @@
             <p class="small-text">{{ scanResult.device?.name ?? "NO name" }}</p>
           </div>
           <button class="cube-white-button small-button collored-button" *ngIf="!bluetoothConnectedDevice"
-                  (click)="connectToBluetoothDevice(scanResult)">Csatlakozás
+                  (click)="connectToBluetoothDevice(scanResult)">
+            {{ 'connect'|translate }}
           </button>
         </div>
         <hr *ngIf="bluetoothScanResults.length > 1" class="divider">
@@ -49,12 +52,13 @@
 
   <div class="start-button-container">
     <button *ngIf="!started" class="rounded-start-button collored-button" [disabled]="started"
-            (click)="startMonitoring()">Mérés
+            (click)="startMonitoring()">
+      {{ 'measurement'|translate }}
     </button>
 
     <div *ngIf="started">
       <button class="opacity-0 rounded-start-button collored-button" [disabled]="started" (click)="startMonitoring()">
-        Mérés
+        {{ 'measurement'|translate }}
       </button>
       <div class="heart">
         <p>{{ measurementResult?.spo2 }}</p>
@@ -72,7 +76,7 @@
               'orange-text': measurementResult?.pulse >= 110 && measurementResult?.pulse <= 130,
               'red-text': measurementResult?.pulse >= 130
             }"
-        >Pulzus: {{ measurementResult?.pulse ?? "" }}</p>
+        >{{ 'pulse_short'|translate }}: {{ measurementResult?.pulse ?? "" }}</p>
         <p class="small-text"
            [ngClass]="{
               'white-text': measurementResult?.spo2 > 95,
@@ -80,19 +84,19 @@
               'orange-text': measurementResult?.spo2 >= 93 && measurementResult?.spo2 <= 94,
               'red-text': measurementResult?.spo2 <= 92
             }"
-        >SPO2: {{ measurementResult?.spo2 ?? "" }}</p>
+        >{{ 'spo2_short'|translate }}: {{ measurementResult?.spo2 ?? "" }}</p>
         <p class="small-text"
            [ngClass]="{
               'white-text': measurementResult?.pi >= 0.2 && measurementResult?.pi <= 20,
               'red-text': measurementResult?.pi <= 0.2 || measurementResult?.pi >= 20
             }"
-        >PI: {{ measurementResult?.pi ?? "" }}</p>
+        >{{ 'pi_short'|translate }}: {{ measurementResult?.pi ?? "" }}</p>
       </div>
-      <mat-icon class="info-icon" (click)="openInfoDialog()">info</mat-icon>
+      <mat-icon class="info-icon" (click)="openInfoDialog()">i</mat-icon>
     </div>
     <canvas id="pulseChart"></canvas>
     <div *ngIf="averageMeasurementResult?.spo2">
-      <b class="normal-text">Mért eredmény (10s alatt):</b>
+      <b class="normal-text">{{ 'result_in_interval'|translate }}:</b>
       <div class="flex justify-around">
         <p
           [ngClass]="{
@@ -101,7 +105,9 @@
               'orange-text': averageMeasurementResult?.pulse >= 110 && averageMeasurementResult?.pulse <= 130,
               'red-text': averageMeasurementResult?.pulse >= 130
             }"
-          class="small-text">Pulzus: {{ averageMeasurementResult?.pulse ?? "" }}</p>
+          class="small-text">
+          {{ 'pulse_short'|translate }}: {{ averageMeasurementResult?.pulse ?? "" }}
+        </p>
         <p
           [ngClass]="{
               'white-text': averageMeasurementResult?.spo2 > 95,
@@ -109,13 +115,17 @@
               'orange-text': averageMeasurementResult?.spo2 >= 93 && averageMeasurementResult?.spo2 <= 94,
               'red-text': averageMeasurementResult?.spo2 <= 92
             }"
-          class="small-text">SPO2: {{ averageMeasurementResult?.spo2 ?? "" }}</p>
-        <p class="small-text"
-           [ngClass]="{
+          class="small-text">
+          {{ 'spo2_short'|translate }}: {{ averageMeasurementResult?.spo2 ?? "" }}
+        </p>
+        <p
+          [ngClass]="{
               'white-text': averageMeasurementResult?.pi >= 0.2 && averageMeasurementResult?.pi <= 20,
               'red-text': averageMeasurementResult?.pi <= 0.2 || averageMeasurementResult?.pi >= 20
             }"
-        >PI: {{ averageMeasurementResult?.pi ?? "" }}</p>
+          class="small-text">
+          {{ 'pi_short'|translate }}: {{ averageMeasurementResult?.pi ?? "" }}
+        </p>
       </div>
     </div>
   </div>

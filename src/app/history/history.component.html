@@ -5,25 +5,25 @@
     </span>
   </span>
   <div class="table table-container">
-    <p class="normal-text p-2" *ngIf="!data.length">Jelenleg nincs még Önhöz tartozó méréseredmény!</p>
+    <p class="normal-text p-2" *ngIf="!data.length">{{ 'not_result_found'|translate }}</p>
     <table *ngIf="data.length" mat-table [dataSource]="data" class="mat-elevation-z8">
       <ng-container matColumnDef="date">
-        <th mat-header-cell *matHeaderCellDef> Időpont</th>
+        <th mat-header-cell *matHeaderCellDef>{{ 'date'|translate }}</th>
         <td mat-cell *matCellDef="let element"> {{element.date | date:'short'}} </td>
       </ng-container>
 
       <ng-container matColumnDef="pulse">
-        <th mat-header-cell *matHeaderCellDef>Perifériás pulzusszám</th>
+        <th mat-header-cell *matHeaderCellDef>{{ 'pulse'|translate }}</th>
         <td mat-cell *matCellDef="let element"> {{element.pulse}} </td>
       </ng-container>
 
       <ng-container matColumnDef="spo2">
-        <th mat-header-cell *matHeaderCellDef>Véroxigén telítettség</th>
+        <th mat-header-cell *matHeaderCellDef>{{ 'spo2'|translate }}</th>
         <td mat-cell *matCellDef="let element"> {{element.spo2}} </td>
       </ng-container>
 
       <ng-container matColumnDef="pi">
-        <th mat-header-cell *matHeaderCellDef>Perfúziós index</th>
+        <th mat-header-cell *matHeaderCellDef>{{ 'pi'|translate }}</th>
         <td mat-cell *matCellDef="let element"> {{element.pi}} </td>
       </ng-container>
 
@@ -31,5 +31,5 @@
       <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
     </table>
   </div>
-  <button class="cube-white-button !mt-0" extended (click)="export()">Export</button>
+  <button class="cube-white-button !mt-0" extended (click)="export()">{{ 'export'|translate }}</button>
 </div>

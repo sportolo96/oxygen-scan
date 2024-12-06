@@ -40,6 +40,8 @@
     "@capacitor/status-bar": "^6.0.1",
     "@capawesome-team/capacitor-file-opener": "^6.1.0",
     "@ionic/angular": "^8.0.0",
+    "@ngx-translate/core": "^16.0.3",
+    "@ngx-translate/http-loader": "^16.0.0",
     "canvasjs": "^1.8.3",
     "chart.js": "^3.7.1",
     "classlist.js": "^1.1.20150312",

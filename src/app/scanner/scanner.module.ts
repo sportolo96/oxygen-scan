@@ -9,6 +9,7 @@ import {MatTabsModule} from '@angular/material/tabs';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import {MatDialogActions, MatDialogClose, MatDialogContent, MatDialogTitle} from "@angular/material/dialog";
 import {MatIcon} from "@angular/material/icon";
+import {TranslatePipe} from "@ngx-translate/core";
 
 @NgModule({
     imports: [
@@ -24,6 +25,7 @@ import {MatIcon} from "@angular/material/icon";
         MatDialogActions,
         MatDialogClose,
         MatIcon,
+        TranslatePipe,
     ],
   declarations: [ScannerComponent]
 })

@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { HeaderTitleService } from "../../shared/services/headerTitle.service";
 import { AlertController } from "@ionic/angular";
 import { User } from "../../shared/models/User";
+import {TranslateService} from "@ngx-translate/core";
 
 @Component({
   selector: 'app-reset',
@@ -18,16 +19,16 @@ export class ResetPasswordComponent implements OnInit {
   error: string | null = null;
 
   private readonly errors = {
-    'invalid-data': 'Nem megfelelő adatok.',
-    'password-mismatch': 'A két jelszó nem egyezik.',
-    'incorrect-old-password': 'Hibás régi jelszó.',
-    'network-error': 'Hálózati hiba történt. Kérjük próbálja újra később.',
-    'unexpected-error': 'Váratlan hiba történt. Kérjük próbálja újra.',
+    'invalid-data': this.translateService.instant('invalid_data'),
+    'password-mismatch':  this.translateService.instant('password_mismatch'),
+    'incorrect-old-password': this.translateService.instant('incorrect_old_password'),
+    'network-error': this.translateService.instant('network_error'),
+    'unexpected-error': this.translateService.instant('unexpected_error'),
   };
 
   private readonly alerts = {
-    'password-updated': ['Sikeres jelszócsere', 'A jelszavad sikeresen frissítve lett!'],
-    'unexpected-error': ['Hiba történt', 'Kérjük próbálja újra később.'],
+    'password-updated': [this.translateService.instant('success_password_update_title'), this.translateService.instant('success_password_longer_text')],
+    'unexpected-error': [this.translateService.instant('failed_process_title'), this.translateService.instant('failed_process_try_again')],
   };
 
   constructor(
@@ -35,8 +36,9 @@ export class ResetPasswordComponent implements OnInit {
     private authService: AuthService,
     private headerTitleService: HeaderTitleService,
     private alertController: AlertController,
+    private translateService: TranslateService,
   ) {
-    this.headerTitleService.changeTitle('Jelszó módosítása');
+    this.headerTitleService.changeTitle(this.translateService.instant('update_password'));
     this.resetForm = new FormGroup({
       oldPassword: new FormControl('', [Validators.required]),
       password: new FormControl('', [Validators.required, Validators.minLength(6)]),
@@ -98,8 +100,8 @@ export class ResetPasswordComponent implements OnInit {
 
   async presentAlert(messages: string[]): Promise<void> {
     const alert = await this.alertController.create({
-      header: 'Figyelem!',
-      message: messages.join(' '),
+      header: messages[0],
+      message: messages[1],
       buttons: ['OK']
     });
     await alert.present();

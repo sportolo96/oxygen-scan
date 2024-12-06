@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { AuthService } from '../../shared/services/auth.service';
 import { User } from "../../shared/models/User";
 import { HeaderTitleService } from "../../shared/services/headerTitle.service";
+import {TranslateService} from "@ngx-translate/core";
 
 @Component({
   selector: 'app-login',
@@ -17,19 +18,20 @@ export class LoginComponent implements OnInit {
   public signInForm: FormGroup;
 
   private readonly errors = {
-    'auth/too-many-requests': 'Túl sok bejelentkezési kísérlet.',
-    'auth/invalid-credential': 'Nem megfelelő email-jelszó páros.',
-    'auth/invalid-email': 'Nem megfelelő email.',
-    'invalid-data': 'Nem megfelelő adatok.',
-    'default': 'Ismeretlen hiba történt.'
+    'auth/too-many-requests': this.translateService.instant('to_many_request'),
+    'auth/invalid-credential': this.translateService.instant('not_correct_email_or_password'),
+    'auth/invalid-email': this.translateService.instant('incorrect_email'),
+    'invalid-data': this.translateService.instant('not_valid_data'),
+    'default': this.translateService.instant('not_valid_data')
   };
 
   constructor(
     private router: Router,
     private authService: AuthService,
-    private headerTitleService: HeaderTitleService
+    private headerTitleService: HeaderTitleService,
+    private translateService: TranslateService,
   ) {
-    this.headerTitleService.changeTitle('Bejelentkezés');
+    this.headerTitleService.changeTitle(this.translateService.instant('login'));
   }
 
   ngOnInit(): void {

@@ -6,6 +6,7 @@ import { UserService } from '../../shared/services/user.service';
 import { Router } from '@angular/router';
 import { HeaderTitleService } from "../../shared/services/headerTitle.service";
 import { AlertController } from "@ionic/angular";
+import {TranslateService} from "@ngx-translate/core";
 
 @Component({
   selector: 'app-register',
@@ -19,16 +20,16 @@ export class RegisterComponent implements OnInit {
   error: string | null = null;
 
   private readonly errors = {
-    'auth/too-many-requests': 'Túl sok bejelentkezési kísérlet.',
-    'auth/invalid-credential': 'Nem megfelelő email-jelszó páros.',
-    'auth/invalid-email': 'Nem megfelelő email.',
-    'auth/email-already-in-use': 'Az email már használatban van.',
-    'invalid-data': 'Nem megfelelő adatok.',
+    'auth/too-many-requests': this.translateService.instant('to_many_request'),
+    'auth/invalid-credential': this.translateService.instant('not_correct_email_or_password'),
+    'auth/invalid-email': this.translateService.instant('incorrect_email'),
+    'auth/email-already-in-use': this.translateService.instant('email_already_in_use'),
+    'invalid-data': this.translateService.instant('not_valid_data'),
   };
 
   private readonly alerts = {
-    'registration-success': ['Sikeres regisztráció!', 'A regisztrációs folyamat sikeresen befejeződött.'],
-    'unexpected-error': ['Hiba történt', 'Kérjük próbálja újra később.'],
+    'registration-success': [this.translateService.instant('success_registration_title'), this.translateService.instant('success_registration_longer_text')],
+    'unexpected-error': [this.translateService.instant('failed_process_title'), this.translateService.instant('failed_process_try_again')],
   };
 
   constructor(
@@ -37,8 +38,9 @@ export class RegisterComponent implements OnInit {
     private userService: UserService,
     private headerTitleService: HeaderTitleService,
     private alertController: AlertController,
+    private translateService: TranslateService,
   ) {
-    this.headerTitleService.changeTitle('Regisztráció');
+    this.headerTitleService.changeTitle(this.translateService.instant('registration'));
     this.signUpForm = new FormGroup({
       email: new FormControl('', [Validators.required, Validators.email]),
       password: new FormControl('', [Validators.required, Validators.minLength(6)]),
@@ -89,7 +91,8 @@ export class RegisterComponent implements OnInit {
 
   async presentAlert(messages: string[]): Promise<void> {
     const alert = await this.alertController.create({
-      header: 'Figyelem!',
+      header: messages[0],
+      message: messages[1],
       buttons: ['OK'],
     });
     await alert.present();

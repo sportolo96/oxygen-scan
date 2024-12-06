@@ -1,5 +1,6 @@
 import {Component} from '@angular/core';
 import {HeaderTitleService} from "../shared/services/headerTitle.service";
+import {TranslateService} from "@ngx-translate/core";
 
 @Component({
   selector: 'app-not-found',
@@ -9,8 +10,9 @@ import {HeaderTitleService} from "../shared/services/headerTitle.service";
 export class NotFoundComponent {
 
   constructor(
-    private headerTitleService: HeaderTitleService
+    private headerTitleService: HeaderTitleService,
+    private translateService: TranslateService,
   ) {
-    this.headerTitleService.changeTitle('404 - Nem található');
+    this.headerTitleService.changeTitle('404 -' + this.translateService.instant('page_not_found'));
   }
 }

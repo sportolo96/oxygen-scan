@@ -22,6 +22,14 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { NgxMatTimepickerModule } from 'ngx-mat-timepicker';
 import {HeaderTitleService} from "./shared/services/headerTitle.service";
+import {LanguageSelectorComponent} from "./language-selector/language-selector.component";
+import {HttpClient, HttpClientModule} from "@angular/common/http";
+import {TranslateLoader, TranslateModule} from "@ngx-translate/core";
+import {TranslateHttpLoader} from "@ngx-translate/http-loader";
+
+export function HttpLoaderFactory(http: HttpClient) {
+  return new TranslateHttpLoader(http);
+}
 
 @NgModule({
   imports: [
@@ -41,10 +49,20 @@ import {HeaderTitleService} from "./shared/services/headerTitle.service";
     MatToolbarModule,
     MatButtonModule,
     MatMenuModule,
-    NgxMatTimepickerModule
+    NgxMatTimepickerModule,
+    HttpClientModule,
+    TranslateModule.forRoot(
+      {
+        loader: {
+          provide: TranslateLoader,
+          useFactory: HttpLoaderFactory,
+          deps: [HttpClient]
+        }
+      }
+    ),
   ],
-  declarations: [AppComponent],
-  providers: [AuthService, HeaderTitleService, { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }, provideAnimationsAsync()],
+    declarations: [AppComponent, LanguageSelectorComponent],
+  providers: [HttpClient, AuthService, HeaderTitleService, { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }, provideAnimationsAsync()],
   bootstrap: [AppComponent]
 })
 export class AppModule {}
