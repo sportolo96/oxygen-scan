@@ -22,7 +22,7 @@ export class HistoryComponent implements OnInit {
     private headerTitleService: HeaderTitleService,
     private translateService: TranslateService,
   ) {
-    this.headerTitleService.changeTitle(this.translateService.instant('login'));
+    this.headerTitleService.changeTitle(this.translateService.instant('histories'));
   }
 
   ngOnInit(): void {
