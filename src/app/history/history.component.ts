@@ -4,6 +4,8 @@ import * as XLSX from 'xlsx';
 import { Filesystem, Directory } from '@capacitor/filesystem';
 import { FileOpener } from '@capawesome-team/capacitor-file-opener';
 import { FhirObservation } from '../shared/models/FhirObservation';
+import {HeaderTitleService} from "../shared/services/headerTitle.service";
+import {TranslateService} from "@ngx-translate/core";
 
 @Component({
   selector: 'app-history',
@@ -15,7 +17,13 @@ export class HistoryComponent implements OnInit {
   loading: boolean = false;
   displayedColumns: string[] = ['date', 'pi', 'spo2', 'pulse'];
 
-  constructor(private firestore: AngularFirestore) {}
+  constructor(
+    private firestore: AngularFirestore,
+    private headerTitleService: HeaderTitleService,
+    private translateService: TranslateService,
+  ) {
+    this.headerTitleService.changeTitle(this.translateService.instant('login'));
+  }
 
   ngOnInit(): void {
     this.loadData();
@@ -55,11 +63,11 @@ export class HistoryComponent implements OnInit {
         grouped[date] = { date };
       }
 
-      if (obs.code.text === 'Pulse') {
+      if (obs.code.text === 'Heart rate') {
         grouped[date].pulse = obs.valueQuantity.value;
-      } else if (obs.code.text === 'SPO2') {
+      } else if (obs.code.text === 'Oxygen saturation') {
         grouped[date].spo2 = obs.valueQuantity.value;
-      } else if (obs.code.text === 'PI') {
+      } else if (obs.code.text === 'Perfusion index') {
         grouped[date].pi = obs.valueQuantity.value;
       }
     });

@@ -168,7 +168,6 @@ export class ScannerComponent implements OnInit, OnDestroy {
     observations.push(await this.saveMeasurement('pi', date));
 
     await this.storageService.saveObservationData(this.user.uid, observations);
-
   }
 
   createChart(result: { labels: string[]; spo2Values: number[]; pulseValues: number[]; piValues: number[] }) {
@@ -456,16 +455,16 @@ export class ScannerComponent implements OnInit, OnDestroy {
 
     switch (measurementType) {
       case 'spo2':
-        observation = this.observationService.createObservation(this.user.uid, date.toISOString(), 'spo2', '2708-6', 'SPO2', this.averageMeasurementResult.spo2, '%');
+        observation = this.observationService.createObservation(this.user.uid, date.toISOString(), 'spo2', '2708-6', 'Oxygen saturation', this.averageMeasurementResult.spo2, '%');
         break;
       case 'pulse':
-        observation = this.observationService.createObservation(this.user.uid, date.toISOString(), 'pulse', '8867-4', 'Pulse', this.averageMeasurementResult.pulse, 'bpm');
+        observation = this.observationService.createObservation(this.user.uid, date.toISOString(), 'pulse', '8867-4', 'Heart rate', this.averageMeasurementResult.pulse, 'bpm');
         break;
       case 'pi':
-        observation = this.observationService.createObservation(this.user.uid, date.toISOString(), 'pi', '9279-1', 'PI', this.averageMeasurementResult.pi, 'unit');
+        observation = this.observationService.createObservation(this.user.uid, date.toISOString(), 'pi', '73798-1', 'Perfusion index', this.averageMeasurementResult.pi, 'unit');
         break;
       default:
-        console.error('Ismeretlen mérés típusa');
+        console.error('Unknown type of data');
         return null;
     }
 
