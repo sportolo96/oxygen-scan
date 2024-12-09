@@ -86,5 +86,6 @@
   "need_to_connect_device": "A méréshez csatlakoztatni kell egy oxigénszintmérő eszközt!",
   "the": "A(z)",
   "cannot_reach_device_end": "oxigénszintmérőt nem lehet elérni.",
-  "need_internet_connection": "Internet kapcsolat szükséges."
+  "need_internet_connection": "Internet kapcsolat szükséges.",
+  "source": "Forrás"
 }

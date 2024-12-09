@@ -86,5 +86,6 @@
   "need_to_connect_device": "You need to connect an oxygen level measuring device to take the measurement!",
   "the": "The",
   "cannot_reach_device_end": "oxygen level meter cannot be reached.",
-  "need_internet_connection": "Need internet connection"
+  "need_internet_connection": "Need internet connection",
+  "source": "Source"
 }
